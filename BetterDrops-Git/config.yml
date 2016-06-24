@@ -1,0 +1,56 @@
+# These are configuration options for the BetterDrops plugin.
+# Odds for dropping the items are found in the odds.yml.
+#
+## Heads Drop:
+MobHeadsDrop: true
+PlayerHeadsDrop: true
+#
+## Powered Skeleton related options:
+PoweredSkeletons: true
+# Whether or not to allow Powered Skeletons to spawn from mob spawner blocks.
+PreventPoweredSpawnFromSpawners: true
+# Set to 2 to make name tag always visible, 1 to make it visible only when
+# looked at, and 0 for no name tag(Currently only 1 and 2 are reccomended, since powered skeletons will otherwise disappear on server restart.)
+PoweredSkeletonNameTagVisibility: 1
+# Switches for each bow. This does not "disable" the bow, it only makes it so
+# it does not occur naturally.
+SpaceBow: true
+IceBow: true
+BazookaBow: true
+ShotgunBow: true
+# Configuration for the spread amount of the Shotgun bow. Higher is more spread.
+ShotgunBowSpread: .2
+# Configuration for the knockback value of the Space bow. 1 is slightly more than 3 blocks.
+SkeletonShootSpaceBowKnockbackValue: 10
+PlayerShootSpaceBowKnockbackValue: 10
+#
+## Special Boots related options:
+SpecialBootsDrop: true
+# Switches for specific boots. This won't disable their functionality, but will make it so they will not occur naturally.
+FireBoots: true
+SkywalkerBoots: true
+LevitationBoots: true
+# Configuration for the time it takes for blocks created by the Skywalker Boots to decay. Time is in ticks.
+SkywalkBootsBlockDecayDelay: 100
+#
+## Shulker Bullet Launcher related options:
+ShulkerLauncherDrop: true
+# Configuration for the cooldown between shots. 0 disables cooldown. Time is in ticks.
+ShulkerBLCooldown: 20
+# Configuration for the sight range (how far it will look for target entities). Distance is in blocks.
+ShulkerBLSightRange: 50
+#
+## Theft Wand related options:
+TheftWandDrop: true
+#
+## Strike Egg related options:
+LightningStrikeEgg: true
+#
+## Flight Potion related options:
+FlightPotionDrop: true
+#
+## General configuration for all special items applicable:
+# Prevents a player from using an anvil to repair a special item.
+PreventSpecialItemRepair: true
+# Prevents a player from using an enchantment table to enchant a special item. It does not protect against using an anvil to enchant.
+PreventSpecialItemEnchant: true

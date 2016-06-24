@@ -1,0 +1,7 @@
+main: com.ln42.betterdrops.Main
+version: 1.1-BETA-4
+name: BetterDrops
+
+commands:
+  bd:
+    description: Commands related to the BetterDrops1.9 plugin.

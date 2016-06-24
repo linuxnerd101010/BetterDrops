@@ -1,0 +1,16 @@
+# The following are the chances of the specified item being dropped. 
+# Odds are the 1 in the specified number.
+CreeperHeadDrop: 100
+ZombieHeadDrop: 100
+SkeletonHeadDrop: 100
+PlayerHeadDrop: 5
+ShulkerLauncherDrop: 25
+PoweredSkeletonSpawn: 50
+SpecialBootsDrop: 50
+FlightPotionDrop: 25
+ShulkerLauncherBreak: 750
+TheftWandDropChance: 25
+TheftWandSuccessChance: 5
+TheftWandMobSuccessChance: 3
+TheftWandBreakChance: 5
+TheftWandMobBreakChance: 25
