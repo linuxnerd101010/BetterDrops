@@ -304,8 +304,6 @@ public class Tools {
 			return true;
 		} else if (lore.contains("Kill (almost) guaranteed.")) {
 			return true;
-			// } else if (lore.contains("DEBUG_LORE")) {
-			// return true;
 		} else {
 			return false;
 		}
