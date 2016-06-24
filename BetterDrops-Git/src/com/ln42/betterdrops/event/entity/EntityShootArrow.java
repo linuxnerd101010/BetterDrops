@@ -1,3 +1,6 @@
+/*
+ * This class handles details from all of the special bows.
+ */
 package com.ln42.betterdrops.event.entity;
 
 import java.util.HashMap;

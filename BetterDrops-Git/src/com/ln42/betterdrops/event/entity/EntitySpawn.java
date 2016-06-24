@@ -1,3 +1,6 @@
+/*
+ * This class handles whether or not a spawned skeleton will become Powered, and therefore wield a special bow.
+ */
 package com.ln42.betterdrops.event.entity;
 
 import org.bukkit.entity.Skeleton;

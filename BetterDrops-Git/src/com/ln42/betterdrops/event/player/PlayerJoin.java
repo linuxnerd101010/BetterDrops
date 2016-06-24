@@ -1,3 +1,6 @@
+/*
+ * This class handles the details if a player logged off while wearing a pair of special boots.
+ */
 package com.ln42.betterdrops.event.player;
 
 import org.bukkit.Location;

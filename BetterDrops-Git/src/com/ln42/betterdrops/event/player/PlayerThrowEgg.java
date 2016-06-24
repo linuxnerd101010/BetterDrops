@@ -1,3 +1,6 @@
+/*
+ * This class handles most code for the Lightning Strike egg.
+ */
 package com.ln42.betterdrops.event.player;
 
 import java.util.HashMap;

@@ -1,3 +1,6 @@
+/*
+ * Various methods used elsewhere.
+ */
 package com.ln42.betterdrops;
 
 import java.util.ArrayList;

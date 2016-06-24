@@ -1,3 +1,6 @@
+/*
+ * This class handles all code related to the Flight Potion.
+ */
 package com.ln42.betterdrops.event.player;
 
 import org.bukkit.entity.Player;

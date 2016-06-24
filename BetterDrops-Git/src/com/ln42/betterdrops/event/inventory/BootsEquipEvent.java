@@ -1,3 +1,6 @@
+/*
+ * This class handles the detection of when a player puts on special boots, and most of the handling code regarding the special boots.
+ */
 package com.ln42.betterdrops.event.inventory;
 
 import java.util.HashMap;

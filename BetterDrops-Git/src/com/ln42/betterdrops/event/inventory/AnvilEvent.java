@@ -1,3 +1,6 @@
+/*
+ * This class prevents a player from repairing any special items.
+ */
 package com.ln42.betterdrops.event.inventory;
 
 import org.bukkit.entity.HumanEntity;

@@ -1,3 +1,6 @@
+/*
+ * This class handles all code related to the ShulkerBL and some code regarding the Lightning Strike egg.
+ */
 package com.ln42.betterdrops.event.player;
 
 import java.util.HashMap;

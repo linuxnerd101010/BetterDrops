@@ -1,3 +1,6 @@
+/*
+ * This class handles all drops.
+ */
 package com.ln42.betterdrops.event.player;
 
 import org.bukkit.Material;

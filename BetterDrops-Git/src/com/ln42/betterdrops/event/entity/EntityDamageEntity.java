@@ -1,3 +1,6 @@
+/*
+ * This class handles code involving most of the special bows, the Theft Wand, and the Lightning Strike egg.
+ */
 package com.ln42.betterdrops.event.entity;
 
 import java.util.UUID;

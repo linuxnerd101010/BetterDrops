@@ -1,3 +1,7 @@
+/*
+ * This class is neccesary to prevent a player with silk touch from mining the blocks produced by the Skywalker boots.
+ * It also prevents players from using the skywalker boots to travel through surfaces.
+ */
 package com.ln42.betterdrops.event.block;
 
 import org.bukkit.event.EventHandler;
