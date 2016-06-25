@@ -14,6 +14,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -186,21 +187,21 @@ public class Tools {
 		rand *= 3;
 		int irand = (int) rand;
 		if (irand == 0) {
-			if (Main.getPlugin(Main.class).getConfig().getBoolean("FireBoots")) {
+			if (JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("FireBoots")) {
 				return getSpecialItem("fireBoots");
 			} else {
 				return bootsSelect();
 			}
 		}
 		if (irand == 1) {
-			if (Main.getPlugin(Main.class).getConfig().getBoolean("SkywalkerBoots")) {
+			if (JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("SkywalkerBoots")) {
 				return getSpecialItem("skywalkerBoots");
 			} else {
 				return bootsSelect();
 			}
 		}
 		if (irand == 2) {
-			if (Main.getPlugin(Main.class).getConfig().getBoolean("LevitationBoots")) {
+			if (JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("LevitationBoots")) {
 				return getSpecialItem("levitationBoots");
 			} else {
 				return bootsSelect();
@@ -215,28 +216,28 @@ public class Tools {
 		rand *= 4;
 		int irand = (int) rand;
 		if (irand == 0) {
-			if (Main.getPlugin(Main.class).getConfig().getBoolean("BazookaBow")) {
+			if (JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("BazookaBow")) {
 				return getSpecialItem("bazookaBow");
 			} else {
 				return bowSelect();
 			}
 		}
 		if (irand == 1) {
-			if (Main.getPlugin(Main.class).getConfig().getBoolean("IceBow")) {
+			if (JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("IceBow")) {
 				return getSpecialItem("iceBow");
 			} else {
 				return bowSelect();
 			}
 		}
 		if (irand == 2) {
-			if (Main.getPlugin(Main.class).getConfig().getBoolean("SpaceBow")) {
+			if (JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("SpaceBow")) {
 				return getSpecialItem("spaceBow");
 			} else {
 				return bowSelect();
 			}
 		}
 		if (irand == 3) {
-			if (Main.getPlugin(Main.class).getConfig().getBoolean("ShotgunBow")) {
+			if (JavaPlugin.getPlugin(Main.class).getConfig().getBoolean("ShotgunBow")) {
 				return getSpecialItem("shotgunBow");
 			} else {
 				return bowSelect();

@@ -26,6 +26,7 @@ public class PluginCommand implements CommandExecutor {
 		plugin = pl;
 	}
 
+	@Override
 	@SuppressWarnings("deprecation")
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		boolean permission = true;
@@ -212,7 +213,7 @@ public class PluginCommand implements CommandExecutor {
 						}
 						sk.getEquipment().setItemInHand(null);
 						sk.getEquipment().setItemInHand(item);
-						sk.getEquipment().setItemInHandDropChance((float) 0);
+						sk.getEquipment().setItemInHandDropChance(0);
 					}
 				}.runTaskLater(this.plugin, 15);
 				return true;
@@ -265,7 +266,7 @@ public class PluginCommand implements CommandExecutor {
 						}
 						sk.getEquipment().setItemInHand(null);
 						sk.getEquipment().setItemInHand(item);
-						sk.getEquipment().setItemInHandDropChance((float) 0);
+						sk.getEquipment().setItemInHandDropChance(0);
 					}
 				}.runTaskLater(this.plugin, 15);
 				return true;
@@ -291,7 +292,7 @@ public class PluginCommand implements CommandExecutor {
 						}
 						sk.getEquipment().setItemInHand(null);
 						sk.getEquipment().setItemInHand(item);
-						sk.getEquipment().setItemInHandDropChance((float) 0);
+						sk.getEquipment().setItemInHandDropChance(0);
 					}
 				}.runTaskLater(this.plugin, 15);
 				return true;

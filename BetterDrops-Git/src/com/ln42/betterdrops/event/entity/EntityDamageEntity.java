@@ -190,6 +190,7 @@ public class EntityDamageEntity implements Listener {
 			if (event.getDamager() instanceof Egg) {
 				final Egg egg = (Egg) event.getDamager();
 				new BukkitRunnable() {
+					@Override
 					public void run() {
 						if (PlayerThrowEgg.thrower.containsKey(egg)) {
 							if (PlayerClick.anvilEggThrown.get(PlayerThrowEgg.thrower.get(egg))) {

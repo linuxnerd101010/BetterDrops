@@ -34,6 +34,7 @@ public class Main extends JavaPlugin implements Listener {
 	@SuppressWarnings("rawtypes")
 	public static HashMap<String, Class> configEntryType = new HashMap<String, Class>();
 
+	@Override
 	public void onEnable() {
 		PluginDescriptionFile pdfFile = getDescription();
 		registerConfig();
@@ -45,6 +46,7 @@ public class Main extends JavaPlugin implements Listener {
 
 	}
 
+	@Override
 	public void onDisable() {
 		PluginDescriptionFile pdfFile = getDescription();
 		Logger logger = getLogger();

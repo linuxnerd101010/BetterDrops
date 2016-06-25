@@ -42,6 +42,7 @@ public class PlayerThrowEgg implements Listener {
 			if (PlayerClick.anvilEggThrown.get(event.getPlayer())) {
 				thrower.put(event.getEgg(), event.getPlayer());
 				new BukkitRunnable() {
+					@Override
 					public void run() {
 						PlayerClick.anvilEggThrown.remove(event.getPlayer());
 						Location eggLoc = event.getEgg().getLocation();

@@ -9,13 +9,10 @@ import java.util.HashSet;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.entity.DragonFireball;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LargeFireball;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.ShulkerBullet;
-import org.bukkit.entity.SmallFireball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -27,7 +24,6 @@ import org.bukkit.util.BlockIterator;
 import com.ln42.betterdrops.Main;
 import com.ln42.betterdrops.Tools;
 
-@SuppressWarnings("unused")
 public class PlayerClick implements Listener {
 	// public static boolean cooldown = false;
 	public static HashMap<Player, Boolean> cooldown = new HashMap<Player, Boolean>();
