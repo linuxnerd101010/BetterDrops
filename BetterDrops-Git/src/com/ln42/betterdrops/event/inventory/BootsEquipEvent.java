@@ -27,6 +27,7 @@ public class BootsEquipEvent implements Listener {
 	// private int id = 0;
 	// private boolean waterTask = false;
 	private int tempId = 0;
+	private HashMap<Player, Boolean> taskRunning = new HashMap<Player, Boolean>();
 	public static HashMap<Player, Integer> id = new HashMap<Player, Integer>();
 	private HashMap<Player, Boolean> waterTask = new HashMap<Player, Boolean>();
 	private HashMap<Player, Block> waterBlock = new HashMap<Player, Block>();
@@ -48,34 +49,56 @@ public class BootsEquipEvent implements Listener {
 			ItemStack boots = event.getNewArmorPiece();
 			Player player = event.getPlayer();
 			if (Tools.isSpecialItem(boots, "fireBoots")) {
-				fireWalk(player);
+				if (taskRunning.containsKey(player)) {
+					if (taskRunning.get(player)) {
+						delayTask("fire", player);
+					} else {
+						fireWalk(player);
+					}
+				} else {
+					fireWalk(player);
+				}
 			} else if (Tools.isSpecialItem(boots, "skywalkerBoots")) {
-				skyWalk(player);
+				if (taskRunning.containsKey(player)) {
+					if (taskRunning.get(player)) {
+						delayTask("sky", player);
+					} else {
+						skyWalk(player);
+					}
+				} else {
+					skyWalk(player);
+				}
 			} else if (Tools.isSpecialItem(boots, "levitationBoots")) {
-				safeWalk(player);
+				if (taskRunning.containsKey(player)) {
+					if (taskRunning.get(player)) {
+						delayTask("water", player);
+					} else {
+						safeWalk(player);
+					}
+				} else {
+					safeWalk(player);
+				}
 			}
 		}
 	}
 
 	public void fireWalk(final Player player) {
+		taskRunning.put(player, true);
 		if (player.hasPotionEffect(PotionEffectType.FIRE_RESISTANCE)) {
 			HashMap<PotionEffectType, PotionEffect> temp = new HashMap<PotionEffectType, PotionEffect>();
-			temp.put(PotionEffectType.FIRE_RESISTANCE,
-					Tools.getPotionEffect(player, PotionEffectType.FIRE_RESISTANCE));
+			temp.put(PotionEffectType.FIRE_RESISTANCE, Tools.getPotionEffect(player, PotionEffectType.FIRE_RESISTANCE));
 			oldEffects.put(player.getDisplayName(), temp);
 			player.removePotionEffect(PotionEffectType.FIRE_RESISTANCE);
 		}
 		if (player.hasPotionEffect(PotionEffectType.SPEED)) {
 			HashMap<PotionEffectType, PotionEffect> temp = new HashMap<PotionEffectType, PotionEffect>();
-			temp.put(PotionEffectType.SPEED,
-					Tools.getPotionEffect(player, PotionEffectType.SPEED));
+			temp.put(PotionEffectType.SPEED, Tools.getPotionEffect(player, PotionEffectType.SPEED));
 			oldEffects.put(player.getDisplayName(), temp);
 			player.removePotionEffect(PotionEffectType.SPEED);
 		}
 		if (player.hasPotionEffect(PotionEffectType.JUMP)) {
 			HashMap<PotionEffectType, PotionEffect> temp = new HashMap<PotionEffectType, PotionEffect>();
-			temp.put(PotionEffectType.JUMP,
-					Tools.getPotionEffect(player, PotionEffectType.JUMP));
+			temp.put(PotionEffectType.JUMP, Tools.getPotionEffect(player, PotionEffectType.JUMP));
 			oldEffects.put(player.getDisplayName(), temp);
 			player.removePotionEffect(PotionEffectType.JUMP);
 		}
@@ -105,6 +128,7 @@ public class BootsEquipEvent implements Listener {
 					int nId = id.get(player);
 					id.remove(player);
 					offlinePlayers.put(player.getDisplayName(), "fire");
+					taskRunning.remove(player);
 					scheduler.cancelTask(nId);
 					return;
 				}
@@ -115,16 +139,17 @@ public class BootsEquipEvent implements Listener {
 						player.removePotionEffect(PotionEffectType.FIRE_RESISTANCE);
 						player.removePotionEffect(PotionEffectType.SPEED);
 						player.removePotionEffect(PotionEffectType.JUMP);
-						if (oldEffects.containsKey(player.getDisplayName())){
-							if (oldEffects.get(player.getDisplayName()).containsKey(PotionEffectType.FIRE_RESISTANCE)){
-								PotionEffect pe = oldEffects.get(player.getDisplayName()).get(PotionEffectType.FIRE_RESISTANCE);
+						if (oldEffects.containsKey(player.getDisplayName())) {
+							if (oldEffects.get(player.getDisplayName()).containsKey(PotionEffectType.FIRE_RESISTANCE)) {
+								PotionEffect pe = oldEffects.get(player.getDisplayName())
+										.get(PotionEffectType.FIRE_RESISTANCE);
 								player.addPotionEffect(pe);
 							}
-							if (oldEffects.get(player.getDisplayName()).containsKey(PotionEffectType.SPEED)){
+							if (oldEffects.get(player.getDisplayName()).containsKey(PotionEffectType.SPEED)) {
 								PotionEffect pe = oldEffects.get(player.getDisplayName()).get(PotionEffectType.SPEED);
 								player.addPotionEffect(pe);
 							}
-							if (oldEffects.get(player.getDisplayName()).containsKey(PotionEffectType.JUMP)){
+							if (oldEffects.get(player.getDisplayName()).containsKey(PotionEffectType.JUMP)) {
 								PotionEffect pe = oldEffects.get(player.getDisplayName()).get(PotionEffectType.JUMP);
 								player.addPotionEffect(pe);
 							}
@@ -138,6 +163,7 @@ public class BootsEquipEvent implements Listener {
 							player.getLocation().getBlock().setType(Material.AIR);
 						}
 						player.setFireTicks(0);
+						taskRunning.remove(player);
 						scheduler.cancelTask(nId);
 					}
 				}
@@ -147,6 +173,7 @@ public class BootsEquipEvent implements Listener {
 	}
 
 	public void safeWalk(final Player player) {
+		taskRunning.put(player, true);
 		final BukkitScheduler scheduler = player.getServer().getScheduler();
 		tempId = scheduler.scheduleSyncRepeatingTask(plugin, new Runnable() {
 			@Override
@@ -164,6 +191,7 @@ public class BootsEquipEvent implements Listener {
 				if (!(player.isOnline())) {
 					int nId = id.get(player);
 					id.remove(player);
+					taskRunning.remove(player);
 					scheduler.cancelTask(nId);
 					return;
 				}
@@ -171,6 +199,7 @@ public class BootsEquipEvent implements Listener {
 					if (id.containsKey(player)) {
 						int nId = id.get(player);
 						id.remove(player);
+						taskRunning.remove(player);
 						scheduler.cancelTask(nId);
 						waterTask.clear();
 						return;
@@ -203,10 +232,10 @@ public class BootsEquipEvent implements Listener {
 	}
 
 	public void skyWalk(final Player player) {
+		taskRunning.put(player, true);
 		if (player.hasPotionEffect(PotionEffectType.SLOW)) {
 			HashMap<PotionEffectType, PotionEffect> temp = new HashMap<PotionEffectType, PotionEffect>();
-			temp.put(PotionEffectType.SLOW,
-					Tools.getPotionEffect(player, PotionEffectType.SLOW));
+			temp.put(PotionEffectType.SLOW, Tools.getPotionEffect(player, PotionEffectType.SLOW));
 			oldEffects.put(player.getDisplayName(), temp);
 			player.removePotionEffect(PotionEffectType.SLOW);
 		}
@@ -219,6 +248,7 @@ public class BootsEquipEvent implements Listener {
 					int nId = id.get(player);
 					id.remove(player);
 					offlinePlayers.put(player.getDisplayName(), "sky");
+					taskRunning.remove(player);
 					scheduler.cancelTask(nId);
 					return;
 				}
@@ -227,13 +257,14 @@ public class BootsEquipEvent implements Listener {
 						int nId = id.get(player);
 						id.remove(player);
 						player.removePotionEffect(PotionEffectType.SLOW);
-						if (oldEffects.containsKey(player)){
-							if (oldEffects.get(player.getDisplayName()).containsKey(PotionEffectType.SLOW)){
+						if (oldEffects.containsKey(player.getDisplayName())) {
+							if (oldEffects.get(player.getDisplayName()).containsKey(PotionEffectType.SLOW)) {
 								PotionEffect pe = oldEffects.get(player.getDisplayName()).get(PotionEffectType.SLOW);
 								player.addPotionEffect(pe);
 							}
 							oldEffects.remove(player.getDisplayName());
 						}
+						taskRunning.remove(player);
 						scheduler.cancelTask(nId);
 						return;
 					}
@@ -282,5 +313,42 @@ public class BootsEquipEvent implements Listener {
 			}
 		}, 5L, 2L);
 		id.put(player, tempId);
+	}
+
+	public void delayTask(String type, final Player player) {
+		if (type.equals("sky")) {
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					if (taskRunning.containsKey(player)){
+						delayTask("sky", player);
+						return;
+					}
+					skyWalk(player);
+				}
+			}.runTaskLater(plugin, 10);
+		} else if (type.equals("water")) {
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					if (taskRunning.containsKey(player)){
+						delayTask("water", player);
+						return;
+					}
+					safeWalk(player);
+				}
+			}.runTaskLater(plugin, 10);
+		} else if (type.equals("fire")) {
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					if (taskRunning.containsKey(player)){
+						delayTask("water", player);
+						return;
+					}
+					fireWalk(player);
+				}
+			}.runTaskLater(plugin, 10);
+		}
 	}
 }
