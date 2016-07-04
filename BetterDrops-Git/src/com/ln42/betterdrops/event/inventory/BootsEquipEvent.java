@@ -28,6 +28,9 @@ public class BootsEquipEvent implements Listener {
 	// private boolean waterTask = false;
 	private int tempId = 0;
 	private HashMap<Player, Boolean> taskRunning = new HashMap<Player, Boolean>();
+	private HashMap<Player, Boolean> skyTaskRunning = new HashMap<Player, Boolean>();
+	private HashMap<Player, Boolean> waterTaskRunning = new HashMap<Player, Boolean>();
+	private HashMap<Player, Boolean> fireTaskRunning = new HashMap<Player, Boolean>();
 	public static HashMap<Player, Integer> id = new HashMap<Player, Integer>();
 	private HashMap<Player, Boolean> waterTask = new HashMap<Player, Boolean>();
 	private HashMap<Player, Block> waterBlock = new HashMap<Player, Block>();
@@ -84,6 +87,7 @@ public class BootsEquipEvent implements Listener {
 
 	public void fireWalk(final Player player) {
 		taskRunning.put(player, true);
+		fireTaskRunning.put(player, true);
 		if (player.hasPotionEffect(PotionEffectType.FIRE_RESISTANCE)) {
 			HashMap<PotionEffectType, PotionEffect> temp = new HashMap<PotionEffectType, PotionEffect>();
 			temp.put(PotionEffectType.FIRE_RESISTANCE, Tools.getPotionEffect(player, PotionEffectType.FIRE_RESISTANCE));
@@ -129,6 +133,7 @@ public class BootsEquipEvent implements Listener {
 					id.remove(player);
 					offlinePlayers.put(player.getDisplayName(), "fire");
 					taskRunning.remove(player);
+					fireTaskRunning.remove(player);
 					scheduler.cancelTask(nId);
 					return;
 				}
@@ -163,6 +168,7 @@ public class BootsEquipEvent implements Listener {
 							player.getLocation().getBlock().setType(Material.AIR);
 						}
 						player.setFireTicks(0);
+						fireTaskRunning.remove(player);
 						taskRunning.remove(player);
 						scheduler.cancelTask(nId);
 					}
@@ -174,6 +180,7 @@ public class BootsEquipEvent implements Listener {
 
 	public void safeWalk(final Player player) {
 		taskRunning.put(player, true);
+		waterTaskRunning.put(player, true);
 		final BukkitScheduler scheduler = player.getServer().getScheduler();
 		tempId = scheduler.scheduleSyncRepeatingTask(plugin, new Runnable() {
 			@Override
@@ -192,6 +199,7 @@ public class BootsEquipEvent implements Listener {
 					int nId = id.get(player);
 					id.remove(player);
 					taskRunning.remove(player);
+					waterTaskRunning.remove(player);
 					scheduler.cancelTask(nId);
 					return;
 				}
@@ -200,6 +208,7 @@ public class BootsEquipEvent implements Listener {
 						int nId = id.get(player);
 						id.remove(player);
 						taskRunning.remove(player);
+						waterTaskRunning.remove(player);
 						scheduler.cancelTask(nId);
 						waterTask.clear();
 						return;
@@ -233,6 +242,7 @@ public class BootsEquipEvent implements Listener {
 
 	public void skyWalk(final Player player) {
 		taskRunning.put(player, true);
+		skyTaskRunning.put(player, true);
 		if (player.hasPotionEffect(PotionEffectType.SLOW)) {
 			HashMap<PotionEffectType, PotionEffect> temp = new HashMap<PotionEffectType, PotionEffect>();
 			temp.put(PotionEffectType.SLOW, Tools.getPotionEffect(player, PotionEffectType.SLOW));
@@ -249,6 +259,7 @@ public class BootsEquipEvent implements Listener {
 					id.remove(player);
 					offlinePlayers.put(player.getDisplayName(), "sky");
 					taskRunning.remove(player);
+					skyTaskRunning.remove(player);
 					scheduler.cancelTask(nId);
 					return;
 				}
@@ -265,6 +276,7 @@ public class BootsEquipEvent implements Listener {
 							oldEffects.remove(player.getDisplayName());
 						}
 						taskRunning.remove(player);
+						skyTaskRunning.remove(player);
 						scheduler.cancelTask(nId);
 						return;
 					}
@@ -321,8 +333,10 @@ public class BootsEquipEvent implements Listener {
 				@Override
 				public void run() {
 					if (taskRunning.containsKey(player)){
-						if (Tools.isSpecialItem(player.getEquipment().getBoots(), "skywalkerBoots")){
-							return;
+						if (skyTaskRunning.containsKey(player)){
+							if (skyTaskRunning.get(player)){
+								return;
+							}
 						}
 						delayTask("sky", player);
 						return;
@@ -335,8 +349,10 @@ public class BootsEquipEvent implements Listener {
 				@Override
 				public void run() {
 					if (taskRunning.containsKey(player)){
-						if (Tools.isSpecialItem(player.getEquipment().getBoots(), "levitationBoots")){
-							return;
+						if (waterTaskRunning.containsKey(player)){
+							if (waterTaskRunning.get(player)){
+								return;
+							}
 						}
 						delayTask("water", player);
 						return;
@@ -349,8 +365,10 @@ public class BootsEquipEvent implements Listener {
 				@Override
 				public void run() {
 					if (taskRunning.containsKey(player)){
-						if (Tools.isSpecialItem(player.getEquipment().getBoots(), "fireBoots")){
-							return;
+						if (fireTaskRunning.containsKey(player)){
+							if (fireTaskRunning.get(player)){
+								return;
+							}
 						}
 						delayTask("water", player);
 						return;
