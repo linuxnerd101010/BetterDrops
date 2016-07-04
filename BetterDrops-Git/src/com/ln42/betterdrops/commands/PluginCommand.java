@@ -271,31 +271,53 @@ public class PluginCommand implements CommandExecutor {
 				}.runTaskLater(this.plugin, 15);
 				return true;
 			} else {
-				if (!(sender instanceof Player)) {
-					sender.sendMessage(ChatColor.RED + "You must specify a player!");
-					return false;
-				}
-				Player player = (Player) sender;
-				final Skeleton sk = player.getWorld().spawn(player.getLocation(), Skeleton.class);
-				sender.sendMessage("Skeleton spawned.");
-				new BukkitRunnable() {
-					@Override
-					public void run() {
-						sk.setSkeletonType(SkeletonType.NORMAL);
-						if (plugin.getConfig().getInt("PoweredSkeletonNameTagVisibility") != 0) {
-							sk.setCustomName("Powered Skeleton");
-							if (plugin.getConfig().getInt("PoweredSkeletonNameTagVisibility") == 2) {
-								sk.setCustomNameVisible(true);
-							} else {
-								sk.setCustomNameVisible(false);
+				if (sender instanceof Player) {
+					Player player = (Player) sender;
+					final Skeleton sk = player.getWorld().spawn(player.getLocation(), Skeleton.class);
+					sender.sendMessage("Skeleton spawned.");
+					new BukkitRunnable() {
+						@Override
+						public void run() {
+							sk.setSkeletonType(SkeletonType.NORMAL);
+							if (plugin.getConfig().getInt("PoweredSkeletonNameTagVisibility") != 0) {
+								sk.setCustomName("Powered Skeleton");
+								if (plugin.getConfig().getInt("PoweredSkeletonNameTagVisibility") == 2) {
+									sk.setCustomNameVisible(true);
+								} else {
+									sk.setCustomNameVisible(false);
+								}
 							}
+							sk.getEquipment().setItemInHand(null);
+							sk.getEquipment().setItemInHand(item);
+							sk.getEquipment().setItemInHandDropChance(0);
 						}
-						sk.getEquipment().setItemInHand(null);
-						sk.getEquipment().setItemInHand(item);
-						sk.getEquipment().setItemInHandDropChance(0);
-					}
-				}.runTaskLater(this.plugin, 15);
-				return true;
+					}.runTaskLater(this.plugin, 15);
+					return true;
+				} else if (sender instanceof BlockCommandSender) {
+					BlockCommandSender bcs = (BlockCommandSender) sender;
+					final Skeleton sk = bcs.getBlock().getWorld().spawn(bcs.getBlock().getLocation(), Skeleton.class);
+					sender.sendMessage("Skeleton spawned.");
+					new BukkitRunnable() {
+						@Override
+						public void run() {
+							sk.setSkeletonType(SkeletonType.NORMAL);
+							if (plugin.getConfig().getInt("PoweredSkeletonNameTagVisibility") != 0) {
+								sk.setCustomName("Powered Skeleton");
+								if (plugin.getConfig().getInt("PoweredSkeletonNameTagVisibility") == 2) {
+									sk.setCustomNameVisible(true);
+								} else {
+									sk.setCustomNameVisible(false);
+								}
+							}
+							sk.getEquipment().setItemInHand(null);
+							sk.getEquipment().setItemInHand(item);
+							sk.getEquipment().setItemInHandDropChance(0);
+						}
+					}.runTaskLater(this.plugin, 15);
+					return true;
+				} else {
+					sender.sendMessage(ChatColor.RED + "You must specify a player!");
+				}
 			}
 		} else if (firstArg.equals("odds")) {
 			if (secondArg.equals("list")) {
