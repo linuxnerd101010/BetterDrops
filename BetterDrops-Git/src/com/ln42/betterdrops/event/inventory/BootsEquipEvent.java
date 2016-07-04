@@ -321,6 +321,9 @@ public class BootsEquipEvent implements Listener {
 				@Override
 				public void run() {
 					if (taskRunning.containsKey(player)){
+						if (Tools.isSpecialItem(player.getEquipment().getBoots(), "skywalkerBoots")){
+							return;
+						}
 						delayTask("sky", player);
 						return;
 					}
@@ -332,6 +335,9 @@ public class BootsEquipEvent implements Listener {
 				@Override
 				public void run() {
 					if (taskRunning.containsKey(player)){
+						if (Tools.isSpecialItem(player.getEquipment().getBoots(), "levitationBoots")){
+							return;
+						}
 						delayTask("water", player);
 						return;
 					}
@@ -343,6 +349,9 @@ public class BootsEquipEvent implements Listener {
 				@Override
 				public void run() {
 					if (taskRunning.containsKey(player)){
+						if (Tools.isSpecialItem(player.getEquipment().getBoots(), "fireBoots")){
+							return;
+						}
 						delayTask("water", player);
 						return;
 					}
