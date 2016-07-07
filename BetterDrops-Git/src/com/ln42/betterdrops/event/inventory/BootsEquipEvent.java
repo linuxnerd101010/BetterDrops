@@ -37,6 +37,7 @@ public class BootsEquipEvent implements Listener {
 	public static HashMap<Block, Integer> bridgeBlock = new HashMap<Block, Integer>();
 	public static HashMap<String, String> offlinePlayers = new HashMap<String, String>();
 	public static HashMap<String, HashMap<PotionEffectType, PotionEffect>> oldEffects = new HashMap<String, HashMap<PotionEffectType, PotionEffect>>();
+	private HashMap<Player, Double> skyYDiff = new HashMap<Player, Double>();
 	// public static Stack<Block> bridgeBlock = new Stack<Block>();
 
 	public BootsEquipEvent(Main pl) {
@@ -225,15 +226,6 @@ public class BootsEquipEvent implements Listener {
 					block.setType(Material.STATIONARY_WATER);
 					waterTask.put(player, true);
 					waterBlock.put(player, block);
-					// System.out.println("Task created.");
-					/*
-					 * new BukkitRunnable() {
-					 * 
-					 * @Override public void run() {
-					 * block.setType(Material.AIR); waterTask.remove(player);
-					 * waterTask.put(player, false); } }.runTaskLater(plugin,
-					 * 4);
-					 */
 				}
 			}
 		}, 5L, 4L);
@@ -291,16 +283,29 @@ public class BootsEquipEvent implements Listener {
 				// player.addPotionEffect(new
 				// PotionEffect(PotionEffectType.SLOW, 100, 1));
 				Location playerLoc = player.getLocation();
-				final Location blockLoc = playerLoc;
-				// newPlayerLoc.setY(playerLoc.getY() +2); Elevator boots
+				if (!(skyYDiff.containsKey(player))) {
+					skyYDiff.put(player, playerLoc.getY());
+				} else {
+					double oldY = skyYDiff.get(player);
+					double newY = playerLoc.getY();
+					double diff = oldY - newY;
+					if (diff > 1) {
+						playerLoc.setY(oldY);
+						player.teleport(playerLoc);
+						player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+						player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 10, 5, true));
+					}
+					skyYDiff.remove(player);
+					skyYDiff.put(player, newY);
+				}
+				final Location blockLoc = player.getLocation();
 				blockLoc.setY(playerLoc.getY() - 1);
 				final Block block = blockLoc.getBlock();
-				/*
-				 * if (bridgeBlock.isEmpty()) {
-				 * bridgeBlock.push(player.getLocation().getBlock()); }
-				 */
 				if (block.getType().equals(Material.GLASS))
 					return;
+				if (bridgeBlock.containsKey(block)) {
+					return;
+				}
 				int blockBakmid = blockLoc.getBlock().getType().getId();
 				int blockBak = blockBakmid;
 				bridgeBlock.put(block, blockBak);
@@ -323,7 +328,7 @@ public class BootsEquipEvent implements Listener {
 
 				}
 			}
-		}, 5L, 2L);
+		}, 5L, 15L);
 		id.put(player, tempId);
 	}
 
@@ -332,9 +337,9 @@ public class BootsEquipEvent implements Listener {
 			new BukkitRunnable() {
 				@Override
 				public void run() {
-					if (taskRunning.containsKey(player)){
-						if (skyTaskRunning.containsKey(player)){
-							if (skyTaskRunning.get(player)){
+					if (taskRunning.containsKey(player)) {
+						if (skyTaskRunning.containsKey(player)) {
+							if (skyTaskRunning.get(player)) {
 								return;
 							}
 						}
@@ -348,9 +353,9 @@ public class BootsEquipEvent implements Listener {
 			new BukkitRunnable() {
 				@Override
 				public void run() {
-					if (taskRunning.containsKey(player)){
-						if (waterTaskRunning.containsKey(player)){
-							if (waterTaskRunning.get(player)){
+					if (taskRunning.containsKey(player)) {
+						if (waterTaskRunning.containsKey(player)) {
+							if (waterTaskRunning.get(player)) {
 								return;
 							}
 						}
@@ -364,9 +369,9 @@ public class BootsEquipEvent implements Listener {
 			new BukkitRunnable() {
 				@Override
 				public void run() {
-					if (taskRunning.containsKey(player)){
-						if (fireTaskRunning.containsKey(player)){
-							if (fireTaskRunning.get(player)){
+					if (taskRunning.containsKey(player)) {
+						if (fireTaskRunning.containsKey(player)) {
+							if (fireTaskRunning.get(player)) {
 								return;
 							}
 						}
