@@ -328,7 +328,7 @@ public class BootsEquipEvent implements Listener {
 
 				}
 			}
-		}, 5L, 15L);
+		}, 5L, 2L);
 		id.put(player, tempId);
 	}
 
