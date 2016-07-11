@@ -113,6 +113,18 @@ public class EntityDamageEntity implements Listener {
 								megaIceForm(targetLocation);
 								return;
 							}
+							if (target.getType().equals(EntityType.SHULKER)){
+								microIceForm(targetLocation);
+								return;
+							}
+							if (target.getType().equals(EntityType.SILVERFISH)){
+								microIceForm(targetLocation);
+								return;
+							}
+							if (target.getType().equals(EntityType.ENDERMITE)){
+								microIceForm(targetLocation);
+								return;
+							}
 							if (target.getType().equals(EntityType.PIG)) {
 								largeIceForm(targetLocation);
 								return;
@@ -203,7 +215,41 @@ public class EntityDamageEntity implements Listener {
 			}
 		}
 	}
-
+	public void microIceForm(Location targetLocation){
+		Location activeLocation = new Location(targetLocation.getWorld(), targetLocation.getX(), targetLocation.getY(),
+				targetLocation.getZ());
+		// Block below
+		activeLocation.setY(targetLocation.getY() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		// First Level
+		activeLocation.setY(targetLocation.getY());
+		activeLocation.setX(targetLocation.getX() + 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX());
+		activeLocation.setZ(targetLocation.getZ() + 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		//Second level
+		activeLocation.setY(targetLocation.getY() + 1);
+		activeLocation.setX(targetLocation.getX());
+		activeLocation.setZ(targetLocation.getZ());
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+	}
 	public void smallIceForm(Location targetLocation) {
 		Location activeLocation = new Location(targetLocation.getWorld(), targetLocation.getX(), targetLocation.getY(),
 				targetLocation.getZ());

@@ -253,6 +253,9 @@ public class BootsEquipEvent implements Listener {
 					taskRunning.remove(player);
 					skyTaskRunning.remove(player);
 					scheduler.cancelTask(nId);
+					if (skyYDiff.containsKey(player)){
+						skyYDiff.remove(player);
+					}
 					return;
 				}
 				if (!(Tools.isSpecialItem(player.getEquipment().getBoots(), "skywalkerBoots"))) {
@@ -269,6 +272,9 @@ public class BootsEquipEvent implements Listener {
 						}
 						taskRunning.remove(player);
 						skyTaskRunning.remove(player);
+						if (skyYDiff.containsKey(player)){
+							skyYDiff.remove(player);
+						}
 						scheduler.cancelTask(nId);
 						return;
 					}
@@ -303,9 +309,6 @@ public class BootsEquipEvent implements Listener {
 				final Block block = blockLoc.getBlock();
 				if (block.getType().equals(Material.GLASS))
 					return;
-				if (bridgeBlock.containsKey(block)) {
-					return;
-				}
 				int blockBakmid = blockLoc.getBlock().getType().getId();
 				int blockBak = blockBakmid;
 				bridgeBlock.put(block, blockBak);
