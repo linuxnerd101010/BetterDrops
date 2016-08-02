@@ -170,11 +170,13 @@ public class Tools {
 		Random rand = new Random();
 		int randomNum = rand.nextInt((ichance - 1) + 1) + 1;
 		int num = ichance / 2;
-		// if (ichance * 2 != num) {
-		// num += 1;
-		// }
-		// System.out.println(Integer.toString(randomNum));
-		// System.out.println(Integer.toString(num));
+		if (ichance > 4){
+			if (ichance % 2 != 0){
+				num += 1;
+			}
+		}
+		//System.out.println(Integer.toString(randomNum));
+		//System.out.println(Integer.toString(num));
 		if (randomNum == num) {
 			return true;
 		} else {
