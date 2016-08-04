@@ -27,7 +27,8 @@ import com.ln42.betterdrops.Tools;
 public class PlayerClick implements Listener {
 	// public static boolean cooldown = false;
 	public static HashMap<Player, Boolean> cooldown = new HashMap<Player, Boolean>();
-	public static HashMap<Player, Boolean> anvilEggThrown = new HashMap<Player, Boolean>();
+	public static HashMap<Player, Boolean> strikeEggThrown = new HashMap<Player, Boolean>();
+	public static HashMap<Player, Integer> expStorageThrown = new HashMap<Player, Integer>();
 	private com.ln42.betterdrops.Main plugin;
 
 	public PlayerClick(com.ln42.betterdrops.Main pl) {
@@ -85,14 +86,22 @@ public class PlayerClick implements Listener {
 					}
 				}
 			}
-			//if (Tools.isSpecialItem(item, "fireballWand")) {
-		//		player.launchProjectile(DragonFireball.class);
-			//}
+			// if (Tools.isSpecialItem(item, "fireballWand")) {
+			// player.launchProjectile(DragonFireball.class);
+			// }
 		}
 		if (plugin.getConfig().getBoolean("LightningStrikeEgg")) {
 			if (item.getType().equals(Material.EGG)) {
 				if (Tools.isSpecialItem(item, "strikeEgg")) {
-					anvilEggThrown.put(player, true);
+					strikeEggThrown.put(player, true);
+				}
+			}
+		}
+		if (plugin.getConfig().getBoolean("XPStorageDrop")) {
+			if (item.getType().equals(Material.EXP_BOTTLE)) {
+				int amount = Tools.isFullXpStorageBottle(item);
+				if (amount != 0) {
+					expStorageThrown.put(player, amount);
 				}
 			}
 		}

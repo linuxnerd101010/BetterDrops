@@ -133,6 +133,17 @@ public class Tools {
 			item.setItemMeta(itemMeta);
 			return item;
 		}
+		if (name.equals("xpBottle")){
+			ItemStack item = new ItemStack(Material.BOW);
+			item.setTypeId(373);
+			ItemMeta itemMeta = item.getItemMeta();
+			itemMeta.setDisplayName(ChatColor.GREEN + "XP Storage Bottle");
+			ArrayList<String> itemLore = new ArrayList<String>();
+			itemLore.add("Holds up to 10 levels.");
+			itemMeta.setLore(itemLore);
+			item.setItemMeta(itemMeta);
+			return item;
+		}
 		/*
 		 * if (name.equals("fireballWand")) { ItemStack item = new
 		 * ItemStack(Material.STICK); ItemMeta itemMeta = item.getItemMeta();
@@ -277,6 +288,7 @@ public class Tools {
 		return (short) rand;
 	}
 
+	@SuppressWarnings("deprecation")
 	public static boolean isSpecialItem(ItemStack item) {
 		if (item == null) {
 			return false;
@@ -289,27 +301,77 @@ public class Tools {
 		}
 		List<String> lore = item.getItemMeta().getLore();
 		if (lore.contains("Feet o' Flames!")) {
-			return true;
+			if (item.getType().equals(Material.GOLD_BOOTS)){
+				return true;
+			} else {
+				return false;
+			}
 		} else if (lore.contains("Floating away...")) {
-			return true;
+			if (item.getType().equals(Material.GOLD_BOOTS)){
+				return true;
+			} else {
+				return false;
+			}
 		} else if (lore.contains("Of no relation to Anakin")) {
-			return true;
+			if (item.getType().equals(Material.GOLD_BOOTS)){
+				return true;
+			} else {
+				return false;
+			}
 		} else if (lore.contains("Down with Newton!")) {
-			return true;
+			if (item.getType().equals(Material.BOW)){
+				return true;
+			} else {
+				return false;
+			}
 		} else if (lore.contains("Redneck Style!")) {
-			return true;
+			if (item.getType().equals(Material.BOW)){
+				return true;
+			} else {
+				return false;
+			}
 		} else if (lore.contains("Explosions!")) {
-			return true;
+			if (item.getType().equals(Material.BOW)){
+				return true;
+			} else {
+				return false;
+			}
 		} else if (lore.contains("0:30")) {
-			return true;
+			if (item.getTypeId() == 373){
+				return true;
+			} else {
+				return false;
+			}
 		} else if (lore.contains("Aim and Click to use.")) {
-			return true;
+			if (item.getType().equals(Material.STICK)){
+				return true;
+			} else {
+				return false;
+			}
 		} else if (lore.contains("Freeze 'em!")) {
-			return true;
+			if (item.getType().equals(Material.BOW)){
+				return true;
+			} else {
+				return false;
+			}
 		} else if (lore.contains("Thou shalt not get caught.")) {
-			return true;
+			if (item.getType().equals(Material.STICK)){
+				return true;
+			} else {
+				return false;
+			}
+		}else if (lore.contains("Holds up to 10 levels.")){
+			if (item.getTypeId() == 373){
+				return true;
+			} else {
+				return false;
+			}
 		} else if (lore.contains("Kill (almost) guaranteed.")) {
-			return true;
+			if (item.getType().equals(Material.EGG)){
+				return true;
+			} else {
+				return false;
+			}
 		} else {
 			return false;
 		}
@@ -375,4 +437,51 @@ public class Tools {
 		}
 		return null;
 	}
+	public static int isFullXpStorageBottle(ItemStack item){
+		if (!(item.getType().equals(Material.EXP_BOTTLE))){
+			return 0;
+		}
+		ItemMeta meta = item.getItemMeta();
+		if (meta.getDisplayName() == null){
+			return 0;
+		}
+		if (!(meta.getDisplayName().equals(ChatColor.GREEN + "Full XP Storage Bottle"))){
+			return 0;
+		}
+		if (!(meta.hasLore())){
+			return 0;
+		}
+		String lore = meta.getLore().get(1);
+		int value = 0;
+		try{
+			value = Integer.parseInt(lore);
+		} catch (java.lang.NumberFormatException e){
+			return 0;
+		}
+		if (value == 0){
+			return 0;
+		}
+		return value;
+	}
+	public static ItemStack getFullXpStorageBottle(int amount){
+		ItemStack item = new ItemStack(Material.EXP_BOTTLE);
+		ItemMeta itemMeta = item.getItemMeta();
+		itemMeta.setDisplayName(ChatColor.GREEN + "Full XP Storage Bottle");
+		ArrayList<String> itemLore = new ArrayList<String>();
+		itemLore.add("Is currently holding:");
+		itemLore.add(Integer.toString(amount));
+		itemMeta.setLore(itemLore);
+		item.setItemMeta(itemMeta);
+		return item;
+	}
+    public static int getXPForLevel(int lvl) {
+        if (lvl <= 15) {
+            return lvl  * 17;
+        }else if (lvl > 16 && lvl < 31) {
+            return (int) (1.5 * Math.pow(lvl, 2) - 29.5 * lvl + 360);
+        }else if (lvl > 30) {
+            return (int) (3.5 * Math.pow(lvl, 2) - 151.5 * lvl + 2220);
+        }
+        return 0;
+    }
 }

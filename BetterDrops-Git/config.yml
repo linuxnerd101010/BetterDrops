@@ -49,6 +49,8 @@ LightningStrikeEgg: true
 ## Flight Potion related options:
 FlightPotionDrop: true
 #
+## XP Storage Bottle related options:
+XPStorageDrop: true
 ## General configuration for all special items applicable:
 # Prevents a player from using an anvil to repair a special item.
 PreventSpecialItemRepair: true

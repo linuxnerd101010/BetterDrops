@@ -205,7 +205,7 @@ public class EntityDamageEntity implements Listener {
 					@Override
 					public void run() {
 						if (PlayerThrowEgg.thrower.containsKey(egg)) {
-							if (PlayerClick.anvilEggThrown.get(PlayerThrowEgg.thrower.get(egg))) {
+							if (PlayerClick.strikeEggThrown.get(PlayerThrowEgg.thrower.get(egg))) {
 								PlayerThrowEgg.targetEntity.put(PlayerThrowEgg.thrower.get(egg), (LivingEntity) event.getEntity());
 								PlayerThrowEgg.thrower.remove(egg);
 							}

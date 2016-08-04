@@ -38,38 +38,36 @@ public class PlayerThrowEgg implements Listener {
 
 	@EventHandler
 	public void onEggThrow(final PlayerEggThrowEvent event) {
-		if (PlayerClick.anvilEggThrown.containsKey(event.getPlayer())) {
-			if (PlayerClick.anvilEggThrown.get(event.getPlayer())) {
-				thrower.put(event.getEgg(), event.getPlayer());
-				new BukkitRunnable() {
-					@Override
-					public void run() {
-						PlayerClick.anvilEggThrown.remove(event.getPlayer());
-						Location eggLoc = event.getEgg().getLocation();
-						if (!(targetEntity.isEmpty())) {
-							if (targetEntity.containsKey(event.getPlayer())) {
-								lightningStrike(targetEntity.get(event.getPlayer()));
-								targetEntity.remove(event.getPlayer());
-								return;
-							}
-						}
-						Entity[] earr = getNearbyEntities(eggLoc, 5, event.getPlayer());
-						if (!(targetEntity.isEmpty())) {
-							if (targetEntity.containsKey(event.getPlayer())) {
-								lightningStrike(targetEntity.get(event.getPlayer()));
-								targetEntity.remove(event.getPlayer());
-								return;
-							}
-						}
-						for (int i = 0; i <= earr.length - 1; i++) {
-							if (earr[i] != null) {
-								lightningStrike((LivingEntity) earr[i]);
-								return;
-							}
+		if (ProjectileLaunch.thrownSpecialItems.containsKey(event.getEgg())) {
+			thrower.put(event.getEgg(), event.getPlayer());
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					ProjectileLaunch.thrownSpecialItems.remove(event.getEgg());
+					Location eggLoc = event.getEgg().getLocation();
+					if (!(targetEntity.isEmpty())) {
+						if (targetEntity.containsKey(event.getPlayer())) {
+							lightningStrike(targetEntity.get(event.getPlayer()));
+							targetEntity.remove(event.getPlayer());
+							return;
 						}
 					}
-				}.runTaskLater(plugin, 2);
-			}
+					Entity[] earr = getNearbyEntities(eggLoc, 5, event.getPlayer());
+					if (!(targetEntity.isEmpty())) {
+						if (targetEntity.containsKey(event.getPlayer())) {
+							lightningStrike(targetEntity.get(event.getPlayer()));
+							targetEntity.remove(event.getPlayer());
+							return;
+						}
+					}
+					for (int i = 0; i <= earr.length - 1; i++) {
+						if (earr[i] != null) {
+							lightningStrike((LivingEntity) earr[i]);
+							return;
+						}
+					}
+				}
+			}.runTaskLater(plugin, 2);
 		}
 		/*
 		 * NOTES: Put a static boolean in PlayerClick that detects when the

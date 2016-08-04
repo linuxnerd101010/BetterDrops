@@ -19,6 +19,7 @@ import com.ln42.betterdrops.commands.PluginCommand;
 import com.ln42.betterdrops.event.block.BridgeBreak;
 import com.ln42.betterdrops.event.entity.EntityDamageEntity;
 import com.ln42.betterdrops.event.entity.EntitySpawn;
+import com.ln42.betterdrops.event.entity.XPBottleHandler;
 import com.ln42.betterdrops.event.entity.EntityShootArrow;
 import com.ln42.betterdrops.event.inventory.AnvilEvent;
 import com.ln42.betterdrops.event.inventory.BootsEquipEvent;
@@ -28,6 +29,7 @@ import com.ln42.betterdrops.event.player.PlayerJoin;
 import com.ln42.betterdrops.event.player.PlayerKill;
 import com.ln42.betterdrops.event.player.PlayerThrowEgg;
 import com.ln42.betterdrops.event.player.PotionDrink;
+import com.ln42.betterdrops.event.player.ProjectileLaunch;
 
 public class Main extends JavaPlugin implements Listener {
 	public static FileConfiguration oddsConfig = null;
@@ -113,6 +115,8 @@ public class Main extends JavaPlugin implements Listener {
 		if (this.getConfig().getBoolean("LightningStrikeEgg")) {
 			pm.registerEvents(new PlayerThrowEgg(this), this);
 		}
+		pm.registerEvents(new XPBottleHandler(), this);
+		pm.registerEvents(new ProjectileLaunch(this), this);
 	}
 
 	public void registerConfig() {
