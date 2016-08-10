@@ -42,15 +42,23 @@ public class PotionDrink implements Listener {
 			}
 		} else if (Tools.isSpecialItem(item, "xpBottle")) {
 			if (plugin.getConfig().getBoolean("XPStorageDrop")) {
-				int xp = player.getExpToLevel();
+				player.sendMessage(Integer.toString(player.getLevel()));
+				int xp = Tools.getXPForLevel(player.getLevel());
+				//player.sendMessage(Integer.toString(Tools.getXPForLevel(player.getLevel())));
+				//player.sendMessage(Integer.toString(player.getTotalExperience()));
+				player.sendMessage(Integer.toString(xp));
 				ItemStack fullBottle = null;
-				if (xp >= 10) {
-					fullBottle = Tools.getFullXpStorageBottle(10);
-					player.giveExpLevels(-10);
-				} else {
+				if (xp >= 500) {
+					fullBottle = Tools.getFullXpStorageBottle(500);
+					int lvl = Tools.getLevelForXP(xp - 500);
+					lvl -= 1;
+					player.setLevel(lvl);
+				} else if (xp != 0){
 					fullBottle = Tools.getFullXpStorageBottle(xp);
-					xp *= -1;
-					player.giveExpLevels(xp);
+					player.setLevel(0);
+				} else {
+					event.setCancelled(true);
+					return;
 				}
 				final ItemStack fFullBottle = fullBottle;
 				new BukkitRunnable(){

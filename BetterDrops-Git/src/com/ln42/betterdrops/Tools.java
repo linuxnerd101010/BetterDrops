@@ -139,7 +139,7 @@ public class Tools {
 			ItemMeta itemMeta = item.getItemMeta();
 			itemMeta.setDisplayName(ChatColor.GREEN + "XP Storage Bottle");
 			ArrayList<String> itemLore = new ArrayList<String>();
-			itemLore.add("Holds up to 10 levels.");
+			itemLore.add("Holds up to 500 XP.");
 			itemMeta.setLore(itemLore);
 			item.setItemMeta(itemMeta);
 			return item;
@@ -360,7 +360,7 @@ public class Tools {
 			} else {
 				return false;
 			}
-		}else if (lore.contains("Holds up to 10 levels.")){
+		}else if (lore.contains("Holds up to 500 XP.")){
 			if (item.getTypeId() == 373){
 				return true;
 			} else {
@@ -474,14 +474,34 @@ public class Tools {
 		item.setItemMeta(itemMeta);
 		return item;
 	}
-    public static int getXPForLevel(int lvl) {
-        if (lvl <= 15) {
-            return lvl  * 17;
-        }else if (lvl > 16 && lvl < 31) {
-            return (int) (1.5 * Math.pow(lvl, 2) - 29.5 * lvl + 360);
-        }else if (lvl > 30) {
-            return (int) (3.5 * Math.pow(lvl, 2) - 151.5 * lvl + 2220);
+	public static int getXPForLevel(int lvl) {
+        int xp = 0;
+		if (lvl <= 16){
+			xp = lvl * lvl;
+			xp += lvl * 6;
+        } else if (lvl <= 31){
+        	xp = lvl * lvl;
+        	xp *= 2.5;
+        	xp -= 40.5 * lvl;
+        	xp += 360;
+        } else if (lvl > 32){
+        	xp = lvl * lvl;
+        	xp *= 4.5;
+        	xp -= 162.5 * lvl;
+        	xp += 2220;
         }
-        return 0;
+		return xp;
     }
+	public static int getLevelForXP(int xp){
+		int lvl = 0;
+		int thisXp = 0;
+		int lastXp = 0;
+		for(lvl = 0; (!(xp >= lastXp && xp <= thisXp)); lvl++){
+			if (lvl != 0){
+				lastXp = thisXp;
+			}
+			thisXp = getXPForLevel(lvl);
+		}
+		return lvl;
+	}
 }

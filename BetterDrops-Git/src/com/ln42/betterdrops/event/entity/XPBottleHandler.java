@@ -5,7 +5,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ExpBottleEvent;
 
-import com.ln42.betterdrops.Tools;
 import com.ln42.betterdrops.event.player.ProjectileLaunch;
 
 public class XPBottleHandler implements Listener {
@@ -15,7 +14,8 @@ public class XPBottleHandler implements Listener {
 		if (ProjectileLaunch.thrownSpecialItems.containsKey(entity)){
 			int amount = ProjectileLaunch.thrownSpecialItems.get(entity);	
 			ProjectileLaunch.thrownSpecialItems.remove(entity);
-			event.setExperience(Tools.getXPForLevel(amount));
+			entity.getServer().broadcastMessage(Integer.toString(amount));
+			event.setExperience(amount);
 		}
 	}
 }
