@@ -34,7 +34,8 @@ public class BootsEquipEvent implements Listener {
 	public static HashMap<Player, Integer> id = new HashMap<Player, Integer>();
 	private HashMap<Player, Boolean> waterTask = new HashMap<Player, Boolean>();
 	private HashMap<Player, Block> waterBlock = new HashMap<Player, Block>();
-	public static HashMap<Block, Integer> bridgeBlock = new HashMap<Block, Integer>();
+	public static HashMap<Block, Material> bridgeBlock = new HashMap<Block, Material>();
+	public static HashMap<Block, Byte> bridgeData = new HashMap<Block, Byte>();
 	public static HashMap<String, String> offlinePlayers = new HashMap<String, String>();
 	public static HashMap<String, HashMap<PotionEffectType, PotionEffect>> oldEffects = new HashMap<String, HashMap<PotionEffectType, PotionEffect>>();
 	private HashMap<Player, Double> skyYDiff = new HashMap<Player, Double>();
@@ -309,8 +310,9 @@ public class BootsEquipEvent implements Listener {
 				final Block block = blockLoc.getBlock();
 				if (block.getType().equals(Material.GLASS))
 					return;
-				int blockBakmid = blockLoc.getBlock().getType().getId();
-				int blockBak = blockBakmid;
+				Material blockBakmid = blockLoc.getBlock().getType();
+				Material blockBak = blockBakmid;
+				bridgeData.put(block, block.getData());
 				bridgeBlock.put(block, blockBak);
 				block.setType(Material.GLASS);
 				if (decayDelay > 0) {
@@ -323,8 +325,10 @@ public class BootsEquipEvent implements Listener {
 							 * bridgeBlock.remove(bridgeBlock.search(block)); }
 							 */
 							if (bridgeBlock.containsKey(block)) {
-								block.setTypeId(bridgeBlock.get(block));
+								block.setType(bridgeBlock.get(block));
+								block.setData(bridgeData.get(block));
 								bridgeBlock.remove(block);
+								bridgeData.remove(block);
 							}
 						}
 					}.runTaskLater(plugin, decayDelay);

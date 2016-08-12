@@ -16,7 +16,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.ln42.betterdrops.codingforcookies.ArmorListsener;
 import com.ln42.betterdrops.commands.PluginCommand;
-import com.ln42.betterdrops.event.block.BridgeBreak;
+import com.ln42.betterdrops.event.block.BlockBreak;
 import com.ln42.betterdrops.event.entity.EntityDamageEntity;
 import com.ln42.betterdrops.event.entity.EntitySpawn;
 import com.ln42.betterdrops.event.entity.XPBottleHandler;
@@ -92,13 +92,19 @@ public class Main extends JavaPlugin implements Listener {
 			// pm.registerEvents(new PlayerWalk(this), this);
 			pm.registerEvents(new BootsEquipEvent(this), this);
 			pm.registerEvents(new PlayerJoin(this), this);
-			pm.registerEvents(new BridgeBreak(), this);
+		}
+		if (this.getConfig().getBoolean("SpecialBootsDrop")) {
+			pm.registerEvents(new BlockBreak(this), this);
+		} else if (this.getConfig().getBoolean("XPStorageDrop")) {
+			pm.registerEvents(new BlockBreak(this), this);
 		}
 		if (this.getConfig().getBoolean("PoweredSkeletons")) {
 			pm.registerEvents(new EntityDamageEntity(this), this);
 		} else if (this.getConfig().getBoolean("TheftWandDrop")) {
 			pm.registerEvents(new EntityDamageEntity(this), this);
 		} else if (this.getConfig().getBoolean("LightningStrikeEgg")) {
+			pm.registerEvents(new EntityDamageEntity(this), this);
+		} else if (this.getConfig().getBoolean("XPStorageDrop")) {
 			pm.registerEvents(new EntityDamageEntity(this), this);
 		}
 		if (this.getConfig().getBoolean("FlightPotionDrop")) {
@@ -115,8 +121,14 @@ public class Main extends JavaPlugin implements Listener {
 		if (this.getConfig().getBoolean("LightningStrikeEgg")) {
 			pm.registerEvents(new PlayerThrowEgg(this), this);
 		}
-		pm.registerEvents(new XPBottleHandler(), this);
-		pm.registerEvents(new ProjectileLaunch(this), this);
+		if (this.getConfig().getBoolean("XPStorageDrop")) {
+			pm.registerEvents(new XPBottleHandler(), this);
+		}
+		if (this.getConfig().getBoolean("XPStorageDrop")) {
+			pm.registerEvents(new ProjectileLaunch(this), this);
+		} else if (this.getConfig().getBoolean("LightningStrikeEgg")){
+			pm.registerEvents(new ProjectileLaunch(this), this);
+		}
 	}
 
 	public void registerConfig() {
@@ -146,6 +158,7 @@ public class Main extends JavaPlugin implements Listener {
 		configEntryType.put("TheftWandDrop", Boolean.class);
 		configEntryType.put("FlightPotionDrop", Boolean.class);
 		configEntryType.put("LightningStrikeEgg", Boolean.class);
+		configEntryType.put("XPStorageDrop", Boolean.class);
 		configEntryType.put("PreventSpecialItemRepair", Boolean.class);
 		configEntryType.put("PreventSpecialItemEnchant", Boolean.class);
 	}

@@ -42,17 +42,31 @@ public class PotionDrink implements Listener {
 			}
 		} else if (Tools.isSpecialItem(item, "xpBottle")) {
 			if (plugin.getConfig().getBoolean("XPStorageDrop")) {
-				player.sendMessage(Integer.toString(player.getLevel()));
 				int xp = Tools.getXPForLevel(player.getLevel());
+				xp += player.getTotalExperience();
 				//player.sendMessage(Integer.toString(Tools.getXPForLevel(player.getLevel())));
 				//player.sendMessage(Integer.toString(player.getTotalExperience()));
-				player.sendMessage(Integer.toString(xp));
 				ItemStack fullBottle = null;
 				if (xp >= 500) {
 					fullBottle = Tools.getFullXpStorageBottle(500);
-					int lvl = Tools.getLevelForXP(xp - 500);
-					lvl -= 1;
-					player.setLevel(lvl);
+					int[] arr = Tools.getLevelForXP(xp - 500);
+					int lvl = arr[0];
+					if (player.getTotalExperience() >= arr[1]){
+						player.sendMessage("Bar is greater than remainder."); //DEBUG
+						arr[1] *= -1;
+						player.giveExp(arr[1]);
+						player.setLevel(lvl);
+					} else {
+						player.sendMessage("Bar is less than remainder."); //DEBUG
+						int xpChange = Tools.getXPForLevel(lvl);
+						lvl -= 1;
+						xpChange -= Tools.getXPForLevel(lvl);
+						xpChange -= arr[1] - player.getTotalExperience();
+						player.sendMessage(Integer.toString(arr[1]));
+						player.sendMessage(Integer.toString(xpChange));
+						player.setLevel(lvl);
+						player.giveExp(xpChange);
+					}
 				} else if (xp != 0){
 					fullBottle = Tools.getFullXpStorageBottle(xp);
 					player.setLevel(0);

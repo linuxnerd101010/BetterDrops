@@ -130,6 +130,11 @@ public class PluginCommand implements CommandExecutor {
 				} else {
 					sender.sendMessage(ChatColor.RED + "Lightning Strike Egg is disabled.");
 				}
+				if (plugin.getConfig().getBoolean("XPStorageDrop")){
+					sender.sendMessage(ChatColor.GREEN + "xpBottle" + ChatColor.RESET + "-A bottle that when drunk stores up to 500 XP. Dropped by Emerald Ore Blocks.");
+				} else {
+					sender.sendMessage(ChatColor.RED + "XP Storage Bottle is disabled.");
+				}
 				return true;
 			} else if (firstArg.equals("version")) {
 				sender.sendMessage("BetterDrops version " + plugin.getDescription().getVersion());
@@ -362,6 +367,9 @@ public class PluginCommand implements CommandExecutor {
 				sender.sendMessage(ChatColor.BOLD + "Key: " + ChatColor.RESET + "TheftWandMobBreakChance "
 						+ ChatColor.BOLD + "Value: " + ChatColor.RESET
 						+ Integer.toString(Main.oddsConfig.getInt("TheftWandMobBreakChance")));
+				sender.sendMessage(ChatColor.BOLD + "Key: " + ChatColor.RESET + "XPStorageDrop "
+						+ ChatColor.BOLD + "Value: " + ChatColor.RESET
+						+ Integer.toString(Main.oddsConfig.getInt("XPStorageDrop")));
 			} else if (secondArg.equals("set")) {
 				if (!(permission)) {
 					sender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
@@ -464,6 +472,9 @@ public class PluginCommand implements CommandExecutor {
 				sender.sendMessage(ChatColor.BOLD + "Key: " + ChatColor.RESET + "FlightPotionDrop " + ChatColor.BOLD
 						+ "Value: " + ChatColor.RESET
 						+ Boolean.toString(plugin.getConfig().getBoolean("FlightPotionDrop")));
+				sender.sendMessage(ChatColor.BOLD + "Key: " + ChatColor.RESET + "XPStorageDrop " + ChatColor.BOLD
+						+ "Value: " + ChatColor.RESET
+						+ Boolean.toString(plugin.getConfig().getBoolean("XPStorageDrop")));
 				sender.sendMessage(ChatColor.BOLD + "Key: " + ChatColor.RESET + "PreventSpecialItemRepair "
 						+ ChatColor.BOLD + "Value: " + ChatColor.RESET
 						+ Boolean.toString(plugin.getConfig().getBoolean("PreventSpecialItemRepair")));

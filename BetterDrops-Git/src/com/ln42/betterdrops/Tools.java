@@ -492,16 +492,20 @@ public class Tools {
         }
 		return xp;
     }
-	public static int getLevelForXP(int xp){
+	public static int[] getLevelForXP(int xp){
+		if (xp < 0){
+			return null;
+		}
+		int[] out = new int[]{0, 0};
 		int lvl = 0;
 		int thisXp = 0;
 		int lastXp = 0;
 		for(lvl = 0; (!(xp >= lastXp && xp <= thisXp)); lvl++){
-			if (lvl != 0){
-				lastXp = thisXp;
-			}
+			lastXp = thisXp;
 			thisXp = getXPForLevel(lvl);
+			out[0] = lvl;
+			out[1] = xp - lastXp;
 		}
-		return lvl;
+		return out;
 	}
 }

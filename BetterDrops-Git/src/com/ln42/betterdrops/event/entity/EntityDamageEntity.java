@@ -24,8 +24,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.ln42.betterdrops.Main;
 import com.ln42.betterdrops.Tools;
-import com.ln42.betterdrops.event.player.PlayerClick;
 import com.ln42.betterdrops.event.player.PlayerThrowEgg;
+import com.ln42.betterdrops.event.player.ProjectileLaunch;
 
 public class EntityDamageEntity implements Listener {
 	private Main plugin;
@@ -205,7 +205,7 @@ public class EntityDamageEntity implements Listener {
 					@Override
 					public void run() {
 						if (PlayerThrowEgg.thrower.containsKey(egg)) {
-							if (PlayerClick.strikeEggThrown.get(PlayerThrowEgg.thrower.get(egg))) {
+							if (ProjectileLaunch.thrownSpecialItems.containsKey((PlayerThrowEgg.thrower.get(egg)))) {
 								PlayerThrowEgg.targetEntity.put(PlayerThrowEgg.thrower.get(egg), (LivingEntity) event.getEntity());
 								PlayerThrowEgg.thrower.remove(egg);
 							}
