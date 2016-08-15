@@ -2,11 +2,9 @@
 package com.ln42.betterdrops;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Listener;
@@ -53,13 +51,7 @@ public class Main extends JavaPlugin implements Listener {
 		PluginDescriptionFile pdfFile = getDescription();
 		Logger logger = getLogger();
 		logger.info(pdfFile.getName() + " has been disabled (V." + pdfFile.getVersion() + ")");
-		try {
-			oddsConfig.save(new File(getDataFolder(), "odds.yml"));
-		} catch (IOException e) {
-			System.out.println(
-					ChatColor.DARK_RED + "CRITICAL: Odds file not found! This is required for all odds functionality!");
-		}
-		saveConfig();
+		
 	}
 
 	public void registerCommands() {
@@ -145,6 +137,7 @@ public class Main extends JavaPlugin implements Listener {
 		configEntryType.put("BazookaBow", Boolean.class);
 		configEntryType.put("ShotgunBow", Boolean.class);
 		configEntryType.put("ShotgunBowSpread", Double.class);
+		configEntryType.put("ShotgunArrowsComeFromInventory", Boolean.class);
 		configEntryType.put("SkeletonShootSpaceBowKnockbackValue", Integer.class);
 		configEntryType.put("PlayerShootSpaceBowKnockbackValue", Integer.class);
 		configEntryType.put("SpecialBootsDrop", Boolean.class);

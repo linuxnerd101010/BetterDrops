@@ -32,7 +32,7 @@ public class EntityShootArrow implements Listener {
 	public static HashMap<Arrow, UUID> spaceArrows = new HashMap<Arrow, UUID>();
 	public static HashMap<Arrow, UUID> iceArrows = new HashMap<Arrow, UUID>();
 	public static HashMap<Arrow, UUID> bazookaArrows = new HashMap<Arrow, UUID>();
-	//public static Location explodeLoc = null;
+	// public static Location explodeLoc = null;
 	public static HashMap<LivingEntity, Location> explodeLoc = new HashMap<LivingEntity, Location>();
 
 	public EntityShootArrow(Main pl) {
@@ -67,6 +67,7 @@ public class EntityShootArrow implements Listener {
 		if (Tools.isSpecialItem(bow, "shotgunBow")) {
 			if (e.getProjectile() instanceof Arrow) {
 				Arrow shotArrow = (Arrow) e.getProjectile();
+				int fire = shotArrow.getFireTicks();
 				World world = shotArrow.getWorld();
 				if (shooter instanceof Player) {
 					Player player = (Player) e.getEntity();
@@ -102,14 +103,25 @@ public class EntityShootArrow implements Listener {
 						zDiff += dir.getZ();
 						Vector newArrowVector = new Vector(xDiff, yDiff, zDiff);
 						newArrowVector.multiply(3);
-						if (!(player.getGameMode().equals(GameMode.CREATIVE))) {
-							if (!(inv.contains(Material.ARROW, 2))) {
-								return;
+						if (plugin.getConfig().getBoolean("ShotgunArrowsComeFromInventory")) {
+							if (!(player.getGameMode().equals(GameMode.CREATIVE))) {
+								if (!(inv.contains(Material.ARROW, 2))) {
+									return;
+								}
 							}
-						}
-						player.launchProjectile(Arrow.class, newArrowVector);
-						if (!(player.getGameMode().equals(GameMode.CREATIVE))) {
-							inv.removeItem(new ItemStack(Material.ARROW));
+							player.launchProjectile(Arrow.class, newArrowVector);
+							if (!(player.getGameMode().equals(GameMode.CREATIVE))) {
+								inv.removeItem(new ItemStack(Material.ARROW));
+							}
+						} else {
+							new BukkitRunnable(){
+								@Override
+								public void run(){
+									Arrow newArrow = world.spawnArrow(shotArrow.getLocation(), newArrowVector, 0, 0);
+									newArrow.setVelocity(newArrowVector);
+									newArrow.setFireTicks(fire);
+								}
+							}.runTaskLater(plugin, 2);
 						}
 						// world.spawnArrow(shotArrow.getLocation(),
 						// shotArrow.getVelocity(),
@@ -168,26 +180,24 @@ public class EntityShootArrow implements Listener {
 			bazookaArrows.put(arrow, arrow.getUniqueId());
 			final World world = arrow.getWorld();
 			arrow.setKnockbackStrength(0);
-			//final Vector fvec = arrow.getVelocity();
+			// final Vector fvec = arrow.getVelocity();
 			new BukkitRunnable() {
 				@Override
 				public void run() {
 					Location arrowLoc = arrow.getLocation();
-					if (!(explodeLoc.containsKey(shooter))){
+					if (!(explodeLoc.containsKey(shooter))) {
 						explodeLoc.put(shooter, arrowLoc);
 					}
 					/*
-					Vector vec = fvec;
-					vec.multiply(.5);
-					if (arrow.getVelocity().getX() < vec.getX()){
-						if (arrow.getVelocity().getZ() < vec.getZ()){
-							arrowLoc.setY(arrowLoc.getY() + .3);
-							arrowLoc.setX(arrowLoc.getX() + .3);
-							arrowLoc.setX(arrowLoc.getX() + .3);
-						}
-					}
-					System.out.println("Explosion Loc: " + arrowLoc.toString());
-					*/
+					 * Vector vec = fvec; vec.multiply(.5); if
+					 * (arrow.getVelocity().getX() < vec.getX()){ if
+					 * (arrow.getVelocity().getZ() < vec.getZ()){
+					 * arrowLoc.setY(arrowLoc.getY() + .3);
+					 * arrowLoc.setX(arrowLoc.getX() + .3);
+					 * arrowLoc.setX(arrowLoc.getX() + .3); } }
+					 * System.out.println("Explosion Loc: " +
+					 * arrowLoc.toString());
+					 */
 					world.createExplosion(explodeLoc.get(shooter), 3);
 					explodeLoc.remove(shooter);
 					arrow.remove();

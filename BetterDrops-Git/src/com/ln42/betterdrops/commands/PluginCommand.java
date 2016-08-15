@@ -1,5 +1,8 @@
 package com.ln42.betterdrops.commands;
 
+import java.io.File;
+import java.io.IOException;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -393,7 +396,13 @@ public class PluginCommand implements CommandExecutor {
 					return false;
 				}
 				Main.oddsConfig.set(key, value);
-				sender.sendMessage("Odds updated. Reload/Restart to save to disk.");
+				sender.sendMessage("Odds updated.");
+				try {
+					Main.oddsConfig.save(new File(plugin.getDataFolder(), "odds.yml"));
+				} catch (IOException e) {
+					System.out.println(
+							ChatColor.DARK_RED + "CRITICAL: Odds file not found! This is required for all odds functionality!");
+				}
 				return true;
 			} else {
 				sender.sendMessage(ChatColor.RED + "Invalid arguments. Type /bd help for more info.");
@@ -430,7 +439,9 @@ public class PluginCommand implements CommandExecutor {
 				sender.sendMessage(ChatColor.BOLD + "Key: " + ChatColor.RESET + "BazookaBow " + ChatColor.BOLD
 						+ "Value: " + ChatColor.RESET + Boolean.toString(plugin.getConfig().getBoolean("BazookaBow")));
 				sender.sendMessage(ChatColor.BOLD + "Key: " + ChatColor.RESET + "ShotgunBow " + ChatColor.BOLD
-						+ "Value: " + ChatColor.RESET + Boolean.toString(plugin.getConfig().getBoolean("ShotgunBow")));
+						+ "Value: " + ChatColor.RESET + Boolean.toString(plugin.getConfig().getBoolean("ShotgunArrowsComeFromInventory")));
+				sender.sendMessage(ChatColor.BOLD + "Key: " + ChatColor.RESET + "ShotgunArrowsComeFromInventory " + ChatColor.BOLD
+						+ "Value: " + ChatColor.RESET + Boolean.toString(plugin.getConfig().getBoolean("ShotgunArrowsComeFromInventory")));
 				sender.sendMessage(
 						ChatColor.BOLD + "Key: " + ChatColor.RESET + "ShotgunBowSpread " + ChatColor.BOLD + "Value: "
 								+ ChatColor.RESET + Double.toString(plugin.getConfig().getDouble("ShotgunBowSpread")));
@@ -506,7 +517,8 @@ public class PluginCommand implements CommandExecutor {
 						return false;
 					}
 					plugin.getConfig().set(key, value);
-					sender.sendMessage("Config updated. Reload/Restart to save to disk.");
+					sender.sendMessage("Config updated.");
+					plugin.saveConfig();
 					return true;
 				}
 				if (Main.configEntryType.get(key).equals(Integer.class)) {
@@ -518,7 +530,8 @@ public class PluginCommand implements CommandExecutor {
 						return false;
 					}
 					plugin.getConfig().set(key, value);
-					sender.sendMessage("Config updated. Reload/Restart to save to disk.");
+					sender.sendMessage("Config updated.");
+					plugin.saveConfig();
 					return true;
 				}
 				if (Main.configEntryType.get(key).equals(Double.class)) {
@@ -530,7 +543,8 @@ public class PluginCommand implements CommandExecutor {
 						return false;
 					}
 					plugin.getConfig().set(key, value);
-					sender.sendMessage("Config updated. Reload/Restart to save to disk.");
+					sender.sendMessage("Config updated.");
+					plugin.saveConfig();
 					return true;
 				}
 				/*

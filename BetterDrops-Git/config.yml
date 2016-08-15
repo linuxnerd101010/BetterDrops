@@ -20,6 +20,8 @@ BazookaBow: true
 ShotgunBow: true
 # Configuration for the spread amount of the Shotgun bow. Higher is more spread.
 ShotgunBowSpread: .2
+# Whether or not the shotgun bow uses 11 arrows.
+ShotgunArrowsComeFromInventory: false
 # Configuration for the knockback value of the Space bow. 1 is slightly more than 3 blocks.
 SkeletonShootSpaceBowKnockbackValue: 10
 PlayerShootSpaceBowKnockbackValue: 10
