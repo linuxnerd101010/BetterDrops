@@ -120,6 +120,7 @@ public class EntityShootArrow implements Listener {
 									Arrow newArrow = world.spawnArrow(shotArrow.getLocation(), newArrowVector, 0, 0);
 									newArrow.setVelocity(newArrowVector);
 									newArrow.setFireTicks(fire);
+									newArrow.setShooter(player);
 								}
 							}.runTaskLater(plugin, 2);
 						}
