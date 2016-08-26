@@ -6,6 +6,7 @@ package com.ln42.betterdrops.event.entity;
 import java.util.HashMap;
 import java.util.UUID;
 
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -48,6 +49,16 @@ public class EntityShootArrow implements Listener {
 		final LivingEntity shooter = e.getEntity();
 		if (Tools.isSpecialItem(bow, "spaceBow")) {
 			Arrow arrow = (Arrow) e.getProjectile();
+			if (!(meta.getDisplayName().equals(ChatColor.GOLD + "Space Bow"))){
+				meta.setDisplayName(ChatColor.GOLD + "Space Bow");
+				if (shooter.getEquipment().getItemInMainHand().equals(bow)){
+					bow.setItemMeta(meta);
+					shooter.getEquipment().setItemInMainHand(bow);
+				} else if (shooter.getEquipment().getItemInOffHand().equals(bow)){
+					bow.setItemMeta(meta);
+					shooter.getEquipment().setItemInMainHand(bow);
+				}
+			}
 			if (shooter instanceof Player) {
 				e.getProjectile().setVelocity(e.getProjectile().getVelocity().multiply(5));
 				UUID id = arrow.getUniqueId();
@@ -66,6 +77,16 @@ public class EntityShootArrow implements Listener {
 		}
 		if (Tools.isSpecialItem(bow, "shotgunBow")) {
 			if (e.getProjectile() instanceof Arrow) {
+				if (!(meta.getDisplayName().equals(ChatColor.GRAY + "Shotgun"))){
+					meta.setDisplayName(ChatColor.GRAY + "Shotgun");
+					if (shooter.getEquipment().getItemInMainHand().equals(bow)){
+						bow.setItemMeta(meta);
+						shooter.getEquipment().setItemInMainHand(bow);
+					} else if (shooter.getEquipment().getItemInOffHand().equals(bow)){
+						bow.setItemMeta(meta);
+						shooter.getEquipment().setItemInMainHand(bow);
+					}
+				}
 				Arrow shotArrow = (Arrow) e.getProjectile();
 				int fire = shotArrow.getFireTicks();
 				World world = shotArrow.getWorld();
@@ -169,11 +190,31 @@ public class EntityShootArrow implements Listener {
 		}
 		if (Tools.isSpecialItem(bow, "iceBow")) {
 			if (e.getProjectile() instanceof Arrow) {
+				if (!(meta.getDisplayName().equals(ChatColor.AQUA + "Ice Bow"))){
+					meta.setDisplayName(ChatColor.AQUA + "Ice Bow");
+					if (shooter.getEquipment().getItemInMainHand().equals(bow)){
+						bow.setItemMeta(meta);
+						shooter.getEquipment().setItemInMainHand(bow);
+					} else if (shooter.getEquipment().getItemInOffHand().equals(bow)){
+						bow.setItemMeta(meta);
+						shooter.getEquipment().setItemInMainHand(bow);
+					}
+				}
 				Arrow shotArrow = (Arrow) e.getProjectile();
 				iceArrows.put(shotArrow, shotArrow.getUniqueId());
 			}
 		}
 		if (Tools.isSpecialItem(bow, "bazookaBow")) {
+			if (!(meta.getDisplayName().equals(ChatColor.DARK_GREEN + "Bazooka"))){
+				meta.setDisplayName(ChatColor.DARK_GREEN + "Bazooka");
+				if (shooter.getEquipment().getItemInMainHand().equals(bow)){
+					bow.setItemMeta(meta);
+					shooter.getEquipment().setItemInMainHand(bow);
+				} else if (shooter.getEquipment().getItemInOffHand().equals(bow)){
+					bow.setItemMeta(meta);
+					shooter.getEquipment().setItemInMainHand(bow);
+				}
+			}
 			final Arrow arrow = (Arrow) e.getProjectile();
 			if (e.getEntity() instanceof Player) {
 				arrow.setVelocity(e.getProjectile().getVelocity().multiply(2));

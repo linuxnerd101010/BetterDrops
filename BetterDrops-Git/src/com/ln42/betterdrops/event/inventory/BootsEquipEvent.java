@@ -5,6 +5,7 @@ package com.ln42.betterdrops.event.inventory;
 
 import java.util.HashMap;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -12,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -52,8 +54,14 @@ public class BootsEquipEvent implements Listener {
 		}
 		if (event.getType().equals(ArmorType.BOOTS)) {
 			ItemStack boots = event.getNewArmorPiece();
+			ItemMeta meta = boots.getItemMeta();
 			Player player = event.getPlayer();
 			if (Tools.isSpecialItem(boots, "fireBoots")) {
+				if (!(meta.getDisplayName().equals(ChatColor.RED + "Fire boots"))){
+					meta.setDisplayName(ChatColor.RED + "Fire boots");
+					boots.setItemMeta(meta);
+					player.getEquipment().setBoots(boots);
+				}
 				if (taskRunning.containsKey(player)) {
 					if (taskRunning.get(player)) {
 						delayTask("fire", player);
@@ -64,6 +72,11 @@ public class BootsEquipEvent implements Listener {
 					fireWalk(player);
 				}
 			} else if (Tools.isSpecialItem(boots, "skywalkerBoots")) {
+				if (!(meta.getDisplayName().equals(ChatColor.GREEN + "Skywalker Boots"))){
+					meta.setDisplayName(ChatColor.GREEN + "Skywalker Boots");
+					boots.setItemMeta(meta);
+					player.getEquipment().setBoots(boots);
+				}
 				if (taskRunning.containsKey(player)) {
 					if (taskRunning.get(player)) {
 						delayTask("sky", player);
@@ -74,6 +87,11 @@ public class BootsEquipEvent implements Listener {
 					skyWalk(player);
 				}
 			} else if (Tools.isSpecialItem(boots, "levitationBoots")) {
+				if (!(meta.getDisplayName().equals(ChatColor.AQUA + "Levitation boots"))){
+					meta.setDisplayName(ChatColor.AQUA + "Levitation boots");
+					boots.setItemMeta(meta);
+					player.getEquipment().setBoots(boots);
+				}
 				if (taskRunning.containsKey(player)) {
 					if (taskRunning.get(player)) {
 						delayTask("water", player);
