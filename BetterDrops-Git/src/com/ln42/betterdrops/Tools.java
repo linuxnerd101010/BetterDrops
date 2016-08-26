@@ -282,7 +282,7 @@ public class Tools {
 			rand *= Math.random() * 2;
 		}
 		rand *= max;
-		if (rand > realMax){
+		if (rand >= realMax){
 			return (short) realMax;
 		}
 		return (short) rand;

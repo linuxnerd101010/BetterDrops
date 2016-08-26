@@ -4,6 +4,7 @@
 ## Heads Drop:
 MobHeadsDrop: true
 PlayerHeadsDrop: true
+DispenserKillsHeadDrop: true
 #
 ## Powered Skeleton related options:
 PoweredSkeletons: true

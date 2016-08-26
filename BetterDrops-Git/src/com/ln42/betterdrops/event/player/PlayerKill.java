@@ -9,16 +9,22 @@ import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Shulker;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Witch;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.projectiles.BlockProjectileSource;
+import org.bukkit.projectiles.ProjectileSource;
 
 import com.ln42.betterdrops.Main;
 import com.ln42.betterdrops.Tools;
@@ -38,16 +44,41 @@ public class PlayerKill implements Listener {
 	public void onPlayerKillPlayer(EntityDeathEvent event) {
 		Entity killedE = event.getEntity();
 		Player killer = event.getEntity().getKiller();
+		boolean nP = true;
 		if (killer == null) {
-			return;
+			if (plugin.getConfig().getBoolean("DispenserKillsHeadDrop")) {
+				EntityDamageEvent damageE = killedE.getLastDamageCause();
+				if (damageE.getCause().equals(DamageCause.PROJECTILE)) {
+					EntityDamageByEntityEvent eDamageE = (EntityDamageByEntityEvent) damageE;
+					Projectile p = (Projectile) eDamageE.getDamager();
+					ProjectileSource pS = p.getShooter();
+					if (pS instanceof BlockProjectileSource) {
+						BlockProjectileSource blockS = (BlockProjectileSource) pS;
+						if (blockS.getBlock().getType().equals(Material.DISPENSER)) {
+							nP = false;
+						} else {
+							return;
+						}
+					} else {
+						return;
+					}
+				} else {
+					return;
+				}
+			} else {
+				return;
+			}
 		}
 		if (killedE instanceof Player) {
 			Player killedPlayer = (Player) killedE;
 			if (plugin.getConfig().getBoolean("PlayerHeadsDrop")) {
-				ItemStack weapon = killer.getItemInHand();
-				int looting = weapon.getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS);
-				looting += Tools.potionEffectLevel(killer, PotionEffectType.LUCK);
-				looting -= Tools.potionEffectLevel(killer, PotionEffectType.UNLUCK);
+				int looting = 0;
+				if (nP) {
+					ItemStack weapon = killer.getItemInHand();
+					looting = weapon.getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS);
+					looting += Tools.potionEffectLevel(killer, PotionEffectType.LUCK);
+					looting -= Tools.potionEffectLevel(killer, PotionEffectType.UNLUCK);
+				}
 				if (Tools.Odds(Main.oddsConfig.getInt("PlayerHeadDrop"), looting)) {
 					String skullOwner = killedPlayer.getName();
 					// String skullOwner = killer.getName();
@@ -64,10 +95,13 @@ public class PlayerKill implements Listener {
 		}
 		if (killedE instanceof Creeper) {
 			if (plugin.getConfig().getBoolean("MobHeadsDrop")) {
-				ItemStack weapon = killer.getItemInHand();
-				int looting = weapon.getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS);
-				looting += Tools.potionEffectLevel(killer, PotionEffectType.LUCK);
-				looting -= Tools.potionEffectLevel(killer, PotionEffectType.UNLUCK);
+				int looting = 0;
+				if (nP) {
+					ItemStack weapon = killer.getItemInHand();
+					looting = weapon.getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS);
+					looting += Tools.potionEffectLevel(killer, PotionEffectType.LUCK);
+					looting -= Tools.potionEffectLevel(killer, PotionEffectType.UNLUCK);
+				}
 				if (Tools.Odds(Main.oddsConfig.getInt("CreeperHeadDrop"), looting)) {
 					short damage = 0;
 					byte data = 4;
@@ -79,10 +113,13 @@ public class PlayerKill implements Listener {
 		if (killedE instanceof Zombie) {
 			if (plugin.getConfig().getBoolean("MobHeadsDrop")) {
 				if (!(killedE instanceof PigZombie)) {
-					ItemStack weapon = killer.getItemInHand();
-					int looting = weapon.getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS);
-					looting += Tools.potionEffectLevel(killer, PotionEffectType.LUCK);
-					looting -= Tools.potionEffectLevel(killer, PotionEffectType.UNLUCK);
+					int looting = 0;
+					if (nP) {
+						ItemStack weapon = killer.getItemInHand();
+						looting = weapon.getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS);
+						looting += Tools.potionEffectLevel(killer, PotionEffectType.LUCK);
+						looting -= Tools.potionEffectLevel(killer, PotionEffectType.UNLUCK);
+					}
 					if (Tools.Odds(Main.oddsConfig.getInt("ZombieHeadDrop"), looting)) {
 						short damage = 0;
 						byte data = 2;
@@ -93,10 +130,13 @@ public class PlayerKill implements Listener {
 			}
 		}
 		if (killedE instanceof Skeleton) {
-			ItemStack weapon = killer.getItemInHand();
-			int looting = weapon.getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS);
-			looting += Tools.potionEffectLevel(killer, PotionEffectType.LUCK);
-			looting -= Tools.potionEffectLevel(killer, PotionEffectType.UNLUCK);
+			int looting = 0;
+			if (nP) {
+				ItemStack weapon = killer.getItemInHand();
+				looting = weapon.getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS);
+				looting += Tools.potionEffectLevel(killer, PotionEffectType.LUCK);
+				looting -= Tools.potionEffectLevel(killer, PotionEffectType.UNLUCK);
+			}
 			if (plugin.getConfig().getBoolean("MobHeadsDrop")) {
 				if (Tools.Odds(Main.oddsConfig.getInt("SkeletonHeadDrop"), looting)) {
 					short damage = 0;

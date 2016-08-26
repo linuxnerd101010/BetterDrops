@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.ln42.betterdrops.Main;
@@ -46,8 +47,11 @@ public class EntitySpawn implements Listener {
 							} else {
 								skeleton.setCustomNameVisible(false);
 							}
+							ItemStack item = skeleton.getEquipment().getItemInHand();
+							ItemStack bow = Tools.bowSelect();
+							bow.addEnchantments(item.getEnchantments());
 							skeleton.getEquipment().setItemInHand(null);
-							skeleton.getEquipment().setItemInHand(Tools.bowSelect());
+							skeleton.getEquipment().setItemInHand(bow);
 							skeleton.getEquipment().setItemInHandDropChance(0);
 						} else {
 							skeleton.getEquipment().setItemInHand(null);

@@ -129,6 +129,7 @@ public class Main extends JavaPlugin implements Listener {
 		saveConfig();
 		configEntryType.put("MobHeadsDrop", Boolean.class);
 		configEntryType.put("PlayerHeadsDrop", Boolean.class);
+		configEntryType.put("DispenserKillsHeadDrop", Boolean.class);
 		configEntryType.put("PoweredSkeletons", Boolean.class);
 		configEntryType.put("PreventPoweredSpawnFromSpawners", Boolean.class);
 		configEntryType.put("PoweredSkeletonNameTagVisibility", Integer.class);
