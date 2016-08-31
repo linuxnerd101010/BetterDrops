@@ -55,6 +55,9 @@ public class BootsEquipEvent implements Listener {
 		}
 		if (event.getType().equals(ArmorType.BOOTS)) {
 			ItemStack boots = event.getNewArmorPiece();
+			if (boots == null){
+				return;
+			}
 			ItemMeta meta = boots.getItemMeta();
 			Player player = event.getPlayer();
 			if (Tools.isSpecialItem(boots, "fireBoots")) {

@@ -26,7 +26,7 @@ import com.ln42.betterdrops.Tools;
 
 public class PlayerThrowEgg implements Listener {
 	private com.ln42.betterdrops.Main plugin;
-	private HashMap<LivingEntity, Boolean> strikeActive = new HashMap<LivingEntity, Boolean>();
+	public static HashMap<LivingEntity, Boolean> strikeActive = new HashMap<LivingEntity, Boolean>();
 	private HashMap<LivingEntity, Integer> id = new HashMap<LivingEntity, Integer>();
 	private HashMap<LivingEntity, Integer> count = new HashMap<LivingEntity, Integer>();
 	public static HashMap<Player, LivingEntity> targetEntity = new HashMap<Player, LivingEntity>();
@@ -149,9 +149,15 @@ public class PlayerThrowEgg implements Listener {
 				// anvilStack.add(newL.getBlock());
 				// world.playSound(newL, Sound.BLOCK_ANVIL_PLACE, .4F, 2);
 				if (target.isDead()) {
-					strikeActive.remove(target);
 					count.remove(target);
+					new BukkitRunnable(){
+						@Override
+						public void run(){
+							strikeActive.remove(target);
+						}
+					}.runTaskLater(plugin, 4);
 					scheduler.cancelTask(id.get(target));
+					return;
 				}
 				if (count.containsKey(target)) {
 					if (count.get(target) >= plugin.getConfig().getInt("LSEMaxStrikeCount")) {

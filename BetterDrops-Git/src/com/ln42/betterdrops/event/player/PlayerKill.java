@@ -3,6 +3,7 @@
  */
 package com.ln42.betterdrops.event.player;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Bat;
 import org.bukkit.entity.Creeper;
@@ -25,6 +26,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.BlockProjectileSource;
 import org.bukkit.projectiles.ProjectileSource;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.ln42.betterdrops.Main;
 import com.ln42.betterdrops.Tools;
@@ -44,11 +46,12 @@ public class PlayerKill implements Listener {
 	public void onPlayerKillPlayer(EntityDeathEvent event) {
 		Entity killedE = event.getEntity();
 		Player killer = event.getEntity().getKiller();
+		Object[] items = event.getDrops().toArray();
 		boolean nP = true;
 		if (killer == null) {
-			if (plugin.getConfig().getBoolean("DispenserKillsHeadDrop")) {
-				EntityDamageEvent damageE = killedE.getLastDamageCause();
-				if (damageE.getCause().equals(DamageCause.PROJECTILE)) {
+			EntityDamageEvent damageE = killedE.getLastDamageCause();
+			if (damageE.getCause().equals(DamageCause.PROJECTILE)) {
+				if (plugin.getConfig().getBoolean("DispenserKillsHeadDrop")) {
 					EntityDamageByEntityEvent eDamageE = (EntityDamageByEntityEvent) damageE;
 					Projectile p = (Projectile) eDamageE.getDamager();
 					ProjectileSource pS = p.getShooter();
@@ -56,21 +59,39 @@ public class PlayerKill implements Listener {
 						BlockProjectileSource blockS = (BlockProjectileSource) pS;
 						if (blockS.getBlock().getType().equals(Material.DISPENSER)) {
 							nP = false;
-						} else {
-							return;
 						}
-					} else {
-						return;
 					}
-				} else {
-					return;
 				}
-			} else {
+			} else if (damageE.getCause().equals(DamageCause.LIGHTNING)) {
+				if (plugin.getConfig().getBoolean("LightningStrikeEgg")) {
+					if (killedE instanceof Player) {
+						System.out.println("Check 0.");
+						Player killedPlayer = (Player) killedE;
+						if (PlayerThrowEgg.strikeActive.containsKey(killedPlayer)) {
+							System.out.println("Check 1.");
+							if (killedPlayer.getWorld().getGameRuleValue("keepInventory").equals("false")) {
+								System.out.println("Check 2.");
+								Location l = killedPlayer.getLocation();
+								new BukkitRunnable(){
+									@Override
+									public void run(){
+										for (int i = 0; i != items.length - 1; i++) {
+											killedPlayer.getWorld().dropItem(l, (ItemStack) items[i]);
+										}
+									}
+								}.runTaskLater(plugin, 5);
+								nP = false;
+							}
+						}
+					}
+				}
+			}
+			if (nP) {
 				return;
 			}
 		}
 		if (killedE instanceof Player) {
-			Player killedPlayer = (Player) killedE;
+			final Player killedPlayer = (Player) killedE;
 			if (plugin.getConfig().getBoolean("PlayerHeadsDrop")) {
 				int looting = 0;
 				if (nP) {
@@ -90,6 +111,36 @@ public class PlayerKill implements Listener {
 					skullMeta.setOwner(skullOwner);
 					drop.setItemMeta(skullMeta);
 					killer.getWorld().dropItem(killedE.getLocation(), drop);
+				}
+			}
+			EntityDamageEvent damageE = killedPlayer.getLastDamageCause();
+			if (damageE.getCause().equals(DamageCause.LIGHTNING)) {
+				if (plugin.getConfig().getBoolean("LightningStrikeEgg")) {
+					if (killedE instanceof Player) {
+						System.out.println("Check 0.");
+						if (PlayerThrowEgg.strikeActive.containsKey(killedPlayer)) {
+							System.out.println("Check 1.");
+							if (killedPlayer.getWorld().getGameRuleValue("keepInventory").equals("false")) {
+								System.out.println("Check 2.");
+								Location l = killedPlayer.getLocation();
+								System.out.println(items.length);
+								new BukkitRunnable(){
+									@Override
+									public void run(){
+										for (int i = -1; i != items.length - 1; i++) {
+											if (i < 0){
+												i++;
+											}
+											killedPlayer.getWorld().dropItem(l, (ItemStack) items[i]);
+											ItemStack item = (ItemStack) items[i];
+											System.out.println(item.getType().toString());
+										}
+									}
+								}.runTaskLater(plugin, 20);
+								nP = false;
+							}
+						}
+					}
 				}
 			}
 		}
