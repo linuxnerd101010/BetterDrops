@@ -41,6 +41,7 @@ public class BootsEquipEvent implements Listener {
 	public static HashMap<String, String> offlinePlayers = new HashMap<String, String>();
 	public static HashMap<String, HashMap<PotionEffectType, PotionEffect>> oldEffects = new HashMap<String, HashMap<PotionEffectType, PotionEffect>>();
 	private HashMap<Player, Double> skyYDiff = new HashMap<Player, Double>();
+	private HashMap<Player, Double> waterYDiff = new HashMap<Player, Double>();
 	// public static Stack<Block> bridgeBlock = new Stack<Block>();
 
 	public BootsEquipEvent(Main pl) {
@@ -240,6 +241,19 @@ public class BootsEquipEvent implements Listener {
 						return;
 					}
 					waterTask.remove(player);
+				}
+				if (!(waterYDiff.containsKey(player))) {
+					waterYDiff.put(player, playerLoc.getY());
+				} else {
+					double oldY = waterYDiff.get(player);
+					double newY = playerLoc.getY();
+					double diff = oldY - newY;
+					if (diff > 2) {
+						playerLoc.setY(oldY);
+						player.teleport(playerLoc);
+					}
+					waterYDiff.remove(player);
+					waterYDiff.put(player, newY);
 				}
 				if (block.getType().equals(Material.AIR)) {
 					block.setType(Material.STATIONARY_WATER);

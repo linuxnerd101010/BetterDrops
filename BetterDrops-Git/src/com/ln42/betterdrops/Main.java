@@ -152,6 +152,7 @@ public class Main extends JavaPlugin implements Listener {
 		configEntryType.put("TheftWandDrop", Boolean.class);
 		configEntryType.put("FlightPotionDrop", Boolean.class);
 		configEntryType.put("LightningStrikeEgg", Boolean.class);
+		configEntryType.put("LSEMaxStrikeCount", Integer.class);
 		configEntryType.put("XPStorageDrop", Boolean.class);
 		configEntryType.put("PreventSpecialItemRepair", Boolean.class);
 		configEntryType.put("PreventSpecialItemEnchant", Boolean.class);

@@ -420,6 +420,9 @@ public class PluginCommand implements CommandExecutor {
 				sender.sendMessage(
 						ChatColor.BOLD + "Key: " + ChatColor.RESET + "PlayerHeadsDrop " + ChatColor.BOLD + "Value: "
 								+ ChatColor.RESET + Boolean.toString(plugin.getConfig().getBoolean("PlayerHeadsDrop")));
+				sender.sendMessage(
+						ChatColor.BOLD + "Key: " + ChatColor.RESET + "DispenserKillsHeadDrop " + ChatColor.BOLD + "Value: "
+								+ ChatColor.RESET + Boolean.toString(plugin.getConfig().getBoolean("DispenserKillsHeadDrop")));
 				sender.sendMessage(ChatColor.BOLD + "Key: " + ChatColor.RESET + "PoweredSkeletons " + ChatColor.BOLD
 						+ "Value: " + ChatColor.RESET
 						+ Boolean.toString(plugin.getConfig().getBoolean("PoweredSkeletons")));
@@ -480,6 +483,9 @@ public class PluginCommand implements CommandExecutor {
 				sender.sendMessage(ChatColor.BOLD + "Key: " + ChatColor.RESET + "LightningStrikeEgg " + ChatColor.BOLD
 						+ "Value: " + ChatColor.RESET
 						+ Boolean.toString(plugin.getConfig().getBoolean("LightningStrikeEgg")));
+				sender.sendMessage(
+						ChatColor.BOLD + "Key: " + ChatColor.RESET + "LSEMaxStrikeCount " + ChatColor.BOLD + "Value: "
+								+ ChatColor.RESET + Integer.toString(plugin.getConfig().getInt("LSEMaxStrikeCount")));
 				sender.sendMessage(ChatColor.BOLD + "Key: " + ChatColor.RESET + "FlightPotionDrop " + ChatColor.BOLD
 						+ "Value: " + ChatColor.RESET
 						+ Boolean.toString(plugin.getConfig().getBoolean("FlightPotionDrop")));

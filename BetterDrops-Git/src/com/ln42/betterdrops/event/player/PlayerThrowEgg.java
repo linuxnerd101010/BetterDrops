@@ -154,7 +154,7 @@ public class PlayerThrowEgg implements Listener {
 					scheduler.cancelTask(id.get(target));
 				}
 				if (count.containsKey(target)) {
-					if (count.get(target) >= 50) {
+					if (count.get(target) >= plugin.getConfig().getInt("LSEMaxStrikeCount")) {
 						strikeActive.remove(target);
 						count.remove(target);
 						scheduler.cancelTask(id.get(target));
