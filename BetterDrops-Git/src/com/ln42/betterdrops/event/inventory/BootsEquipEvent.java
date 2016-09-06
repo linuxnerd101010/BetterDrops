@@ -224,6 +224,7 @@ public class BootsEquipEvent implements Listener {
 					id.remove(player);
 					taskRunning.remove(player);
 					waterTaskRunning.remove(player);
+					waterYDiff.remove(player);
 					scheduler.cancelTask(nId);
 					return;
 				}
@@ -233,6 +234,7 @@ public class BootsEquipEvent implements Listener {
 						id.remove(player);
 						taskRunning.remove(player);
 						waterTaskRunning.remove(player);
+						waterYDiff.remove(player);
 						scheduler.cancelTask(nId);
 						waterTask.clear();
 						return;
