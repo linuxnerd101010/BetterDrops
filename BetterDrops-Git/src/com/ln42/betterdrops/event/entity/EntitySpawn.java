@@ -58,7 +58,7 @@ public class EntitySpawn implements Listener {
 							skeleton.getEquipment().setItemInHand(Tools.bowSelect());
 							skeleton.getEquipment().setItemInHandDropChance(1);
 						}
-						
+
 					}
 				}.runTaskLater(this.plugin, 10);
 			}

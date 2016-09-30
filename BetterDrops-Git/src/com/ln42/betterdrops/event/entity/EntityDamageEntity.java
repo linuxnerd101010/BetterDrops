@@ -13,12 +13,13 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.MagmaCube;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Skeleton;
+import org.bukkit.entity.Skeleton.SkeletonType;
 import org.bukkit.entity.Slime;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -44,6 +45,9 @@ public class EntityDamageEntity implements Listener {
 					UUID id = arrow.getUniqueId();
 					if (EntityShootArrow.spaceArrows.get(arrow).equals(id)) {
 						if (event.getEntity() instanceof LivingEntity) {
+							if (arrow.getShooter() instanceof Skeleton) {
+								return;
+							}
 							double damage = event.getDamage();
 							damage /= 3;
 							event.setDamage(damage);
@@ -106,23 +110,34 @@ public class EntityDamageEntity implements Listener {
 
 							}
 							if (target.getType().equals(EntityType.GHAST)) {
-								target.addPotionEffect(new PotionEffect(PotionEffectType.HARM, 1, 1));
+								ghastIceForm(targetLocation);
 								return;
 							}
 							if (target.getType().equals(EntityType.HORSE)) {
 								megaIceForm(targetLocation);
 								return;
 							}
-							if (target.getType().equals(EntityType.SHULKER)){
+							if (target.getType().equals(EntityType.SHULKER)) {
 								microIceForm(targetLocation);
 								return;
 							}
-							if (target.getType().equals(EntityType.SILVERFISH)){
+							if (target.getType().equals(EntityType.SILVERFISH)) {
 								microIceForm(targetLocation);
 								return;
 							}
-							if (target.getType().equals(EntityType.ENDERMITE)){
+							if (target.getType().equals(EntityType.ENDERMITE)) {
 								microIceForm(targetLocation);
+								return;
+							}
+							if (target.getType().equals(EntityType.SKELETON)) {
+								Skeleton sk = (Skeleton) target;
+								if (sk.getSkeletonType().equals(SkeletonType.WITHER)) {
+									tallIceForm(targetLocation);
+									return;
+								}
+							}
+							if (target.getType().equals(EntityType.IRON_GOLEM)) {
+								tallIceForm(targetLocation);
 								return;
 							}
 							if (target.getType().equals(EntityType.PIG)) {
@@ -137,12 +152,14 @@ public class EntityDamageEntity implements Listener {
 				}
 				if (EntityShootArrow.bazookaArrows.containsKey(arrow)) {
 					if (EntityShootArrow.bazookaArrows.get(arrow).equals(arrow.getUniqueId())) {
-						if (arrow.getShooter() instanceof LivingEntity){
-						//EntityShootArrow.explodeLoc = event.getEntity().getLocation();
-						EntityShootArrow.explodeLoc.put((LivingEntity) arrow.getShooter(), event.getEntity().getLocation());
-						//event.setCancelled(true);
-						event.setDamage(0);
-						arrow.setVelocity(arrow.getVelocity().multiply(0));
+						if (arrow.getShooter() instanceof LivingEntity) {
+							// EntityShootArrow.explodeLoc =
+							// event.getEntity().getLocation();
+							EntityShootArrow.explodeLoc.put((LivingEntity) arrow.getShooter(),
+									event.getEntity().getLocation());
+							// event.setCancelled(true);
+							event.setDamage(0);
+							arrow.setVelocity(arrow.getVelocity().multiply(0));
 						}
 					}
 				}
@@ -206,7 +223,8 @@ public class EntityDamageEntity implements Listener {
 					public void run() {
 						if (PlayerThrowEgg.thrower.containsKey(egg)) {
 							if (ProjectileLaunch.thrownSpecialItems.containsKey((PlayerThrowEgg.thrower.get(egg)))) {
-								PlayerThrowEgg.targetEntity.put(PlayerThrowEgg.thrower.get(egg), (LivingEntity) event.getEntity());
+								PlayerThrowEgg.targetEntity.put(PlayerThrowEgg.thrower.get(egg),
+										(LivingEntity) event.getEntity());
 								PlayerThrowEgg.thrower.remove(egg);
 							}
 						}
@@ -215,7 +233,8 @@ public class EntityDamageEntity implements Listener {
 			}
 		}
 	}
-	public void microIceForm(Location targetLocation){
+
+	public void microIceForm(Location targetLocation) {
 		Location activeLocation = new Location(targetLocation.getWorld(), targetLocation.getX(), targetLocation.getY(),
 				targetLocation.getZ());
 		// Block below
@@ -242,7 +261,7 @@ public class EntityDamageEntity implements Listener {
 		if (isAirCheck(activeLocation)) {
 			activeLocation.getBlock().setType(Material.ICE);
 		}
-		//Second level
+		// Second level
 		activeLocation.setY(targetLocation.getY() + 1);
 		activeLocation.setX(targetLocation.getX());
 		activeLocation.setZ(targetLocation.getZ());
@@ -250,6 +269,7 @@ public class EntityDamageEntity implements Listener {
 			activeLocation.getBlock().setType(Material.ICE);
 		}
 	}
+
 	public void smallIceForm(Location targetLocation) {
 		Location activeLocation = new Location(targetLocation.getWorld(), targetLocation.getX(), targetLocation.getY(),
 				targetLocation.getZ());
@@ -904,6 +924,730 @@ public class EntityDamageEntity implements Listener {
 		loc.setY(y);
 		loc.setZ(z);
 		return loc;
+	}
+
+	public void ghastIceForm(Location targetLocation) {
+		targetLocation.setY(targetLocation.getY() + 1);
+		Location activeLocation = new Location(targetLocation.getWorld(), targetLocation.getX(), targetLocation.getY(),
+				targetLocation.getZ());
+		// Below
+		activeLocation.setY(targetLocation.getY() - 3);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ());
+		activeLocation.setX(targetLocation.getX() + 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ());
+		activeLocation.setX(targetLocation.getX() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ());
+		activeLocation.setX(targetLocation.getX() - 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ());
+		activeLocation.setX(targetLocation.getX() + 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		// First Layer
+		activeLocation.setY(targetLocation.getY() - 2);
+		activeLocation.setZ(targetLocation.getZ());
+		activeLocation.setX(targetLocation.getX() + 3);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() - 3);
+		activeLocation.setZ(targetLocation.getZ());
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX());
+		activeLocation.setZ(targetLocation.getZ() + 3);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() - 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() + 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() + 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX());
+		activeLocation.setZ(targetLocation.getZ() - 3);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() - 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() + 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() + 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		// Second Layer
+		activeLocation.setY(targetLocation.getY() - 1);
+		activeLocation.setZ(targetLocation.getZ());
+		activeLocation.setX(targetLocation.getX() + 3);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() - 3);
+		activeLocation.setZ(targetLocation.getZ());
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX());
+		activeLocation.setZ(targetLocation.getZ() + 3);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() - 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() + 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() + 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX());
+		activeLocation.setZ(targetLocation.getZ() - 3);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() - 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() + 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() + 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		// Third layer
+		activeLocation.setY(targetLocation.getY());
+		activeLocation.setZ(targetLocation.getZ());
+		activeLocation.setX(targetLocation.getX() + 3);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() - 3);
+		activeLocation.setZ(targetLocation.getZ());
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX());
+		activeLocation.setZ(targetLocation.getZ() + 3);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() - 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() + 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() + 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX());
+		activeLocation.setZ(targetLocation.getZ() - 3);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() - 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() + 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() + 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		// Fourth layer
+		activeLocation.setY(targetLocation.getY() + 1);
+		activeLocation.setZ(targetLocation.getZ());
+		activeLocation.setX(targetLocation.getX() + 3);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() - 3);
+		activeLocation.setZ(targetLocation.getZ());
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX());
+		activeLocation.setZ(targetLocation.getZ() + 3);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() - 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() + 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() + 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX());
+		activeLocation.setZ(targetLocation.getZ() - 3);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() - 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() + 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() + 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		// Fifth layer
+		activeLocation.setY(targetLocation.getY() + 2);
+		activeLocation.setZ(targetLocation.getZ());
+		activeLocation.setX(targetLocation.getX() + 3);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() - 3);
+		activeLocation.setZ(targetLocation.getZ());
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX());
+		activeLocation.setZ(targetLocation.getZ() + 3);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() - 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() + 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() + 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX());
+		activeLocation.setZ(targetLocation.getZ() - 3);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() - 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() + 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() + 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		// Top
+		activeLocation.setY(targetLocation.getY() + 3);
+		activeLocation.setZ(targetLocation.getZ());
+		activeLocation.setX(targetLocation.getX());
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ());
+		activeLocation.setX(targetLocation.getX() + 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ());
+		activeLocation.setX(targetLocation.getX() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ());
+		activeLocation.setX(targetLocation.getX() - 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ());
+		activeLocation.setX(targetLocation.getX() + 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 2);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+	}
+
+	public void tallIceForm(Location targetLocation) {
+		Location activeLocation = new Location(targetLocation.getWorld(), targetLocation.getX(), targetLocation.getY(),
+				targetLocation.getZ());
+		// Block below
+		activeLocation.setY(targetLocation.getY() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		// First Level
+		activeLocation.setY(targetLocation.getY());
+		activeLocation.setX(targetLocation.getX() + 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX());
+		activeLocation.setZ(targetLocation.getZ() + 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		// Second Level
+		activeLocation.setY(targetLocation.getY() + 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ());
+		activeLocation.setX(targetLocation.getX() + 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		// Third level
+		activeLocation.setY(targetLocation.getY() + 2);
+		activeLocation.setX(targetLocation.getX() + 1);
+		activeLocation.setZ(targetLocation.getZ());
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ() + 1);
+		activeLocation.setX(targetLocation.getX());
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setZ(targetLocation.getZ());
+		activeLocation.setX(targetLocation.getX() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		activeLocation.setX(targetLocation.getX());
+		activeLocation.setZ(targetLocation.getZ() - 1);
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
+		// Top
+		activeLocation.setY(targetLocation.getY() + 3);
+		activeLocation.setX(targetLocation.getX());
+		activeLocation.setZ(targetLocation.getZ());
+		if (isAirCheck(activeLocation)) {
+			activeLocation.getBlock().setType(Material.ICE);
+		}
 	}
 
 	public boolean isAirCheck(Location loc) {
