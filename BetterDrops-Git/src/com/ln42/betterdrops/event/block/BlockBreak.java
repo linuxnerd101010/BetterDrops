@@ -34,6 +34,7 @@ public class BlockBreak implements Listener {
 				event.getBlock().setData(BootsEquipEvent.bridgeData.get(event.getBlock()));
 				BootsEquipEvent.bridgeData.remove(event.getBlock());
 				BootsEquipEvent.bridgeBlock.remove(event.getBlock());
+				BootsEquipEvent.bridgeBlockDecay.remove(event.getBlock());
 			}
 		}
 		if (plugin.getConfig().getBoolean("XPStorageDrop")) {

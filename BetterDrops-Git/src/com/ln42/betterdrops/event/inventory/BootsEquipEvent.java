@@ -4,6 +4,7 @@
 package com.ln42.betterdrops.event.inventory;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -37,8 +38,10 @@ public class BootsEquipEvent implements Listener {
 	private HashMap<Player, Boolean> waterTask = new HashMap<Player, Boolean>();
 	private HashMap<Player, Block> waterBlock = new HashMap<Player, Block>();
 	public static HashMap<Block, Material> bridgeBlock = new HashMap<Block, Material>();
+	public static LinkedHashMap<Block, Integer> bridgeBlockDecay = new LinkedHashMap<Block, Integer>();
 	public static HashMap<Block, Byte> bridgeData = new HashMap<Block, Byte>();
 	public static HashMap<String, String> offlinePlayers = new HashMap<String, String>();
+	public static HashMap<Player, Integer> runTime = new HashMap<Player, Integer>();
 	public static HashMap<String, HashMap<PotionEffectType, PotionEffect>> oldEffects = new HashMap<String, HashMap<PotionEffectType, PotionEffect>>();
 	private HashMap<Player, Double> skyYDiff = new HashMap<Player, Double>();
 	private HashMap<Player, Double> waterYDiff = new HashMap<Player, Double>();
@@ -55,13 +58,13 @@ public class BootsEquipEvent implements Listener {
 		}
 		if (event.getType().equals(ArmorType.BOOTS)) {
 			ItemStack boots = event.getNewArmorPiece();
-			if (boots == null){
+			if (boots == null) {
 				return;
 			}
 			ItemMeta meta = boots.getItemMeta();
 			Player player = event.getPlayer();
 			if (Tools.isSpecialItem(boots, "fireBoots")) {
-				if (!(meta.getDisplayName().equals(ChatColor.RED + "Fire boots"))){
+				if (!(meta.getDisplayName().equals(ChatColor.RED + "Fire boots"))) {
 					meta.setDisplayName(ChatColor.RED + "Fire boots");
 					boots.setItemMeta(meta);
 					player.getEquipment().setBoots(boots);
@@ -76,7 +79,7 @@ public class BootsEquipEvent implements Listener {
 					fireWalk(player);
 				}
 			} else if (Tools.isSpecialItem(boots, "skywalkerBoots")) {
-				if (!(meta.getDisplayName().equals(ChatColor.GREEN + "Skywalker Boots"))){
+				if (!(meta.getDisplayName().equals(ChatColor.GREEN + "Skywalker Boots"))) {
 					meta.setDisplayName(ChatColor.GREEN + "Skywalker Boots");
 					boots.setItemMeta(meta);
 					player.getEquipment().setBoots(boots);
@@ -91,7 +94,7 @@ public class BootsEquipEvent implements Listener {
 					skyWalk(player);
 				}
 			} else if (Tools.isSpecialItem(boots, "levitationBoots")) {
-				if (!(meta.getDisplayName().equals(ChatColor.AQUA + "Levitation boots"))){
+				if (!(meta.getDisplayName().equals(ChatColor.AQUA + "Levitation boots"))) {
 					meta.setDisplayName(ChatColor.AQUA + "Levitation boots");
 					boots.setItemMeta(meta);
 					player.getEquipment().setBoots(boots);
@@ -279,19 +282,39 @@ public class BootsEquipEvent implements Listener {
 			oldEffects.put(player.getDisplayName(), temp);
 			player.removePotionEffect(PotionEffectType.SLOW);
 		}
+		final int decayDelay = plugin.getConfig().getInt("SkywalkBootsBlockDecayDelay");
 		final BukkitScheduler scheduler = player.getServer().getScheduler();
 		tempId = scheduler.scheduleSyncRepeatingTask(plugin, new Runnable() {
 			@SuppressWarnings("deprecation")
 			@Override
 			public void run() {
+				if (!(runTime.containsKey(player))){
+					runTime.put(player, 0);
+				} else {
+					int time = runTime.get(player);
+					runTime.remove(player);
+					runTime.put(player, time + 2);
+				}
 				if (!(player.isOnline())) {
 					int nId = id.get(player);
 					id.remove(player);
 					offlinePlayers.put(player.getDisplayName(), "sky");
 					taskRunning.remove(player);
 					skyTaskRunning.remove(player);
+					Object[] blockArr = bridgeBlockDecay.keySet().toArray();
+					if (blockArr.length != 0) {
+						for (int i = 0; i < blockArr.length; i++) {
+							Block block = (Block) blockArr[i];
+							block.setType(bridgeBlock.get(block));
+							block.setData(bridgeData.get(block));
+							bridgeBlock.remove(block);
+							bridgeData.remove(block);
+							bridgeBlockDecay.remove(block);
+						}
+					}
+					runTime.remove(player);
 					scheduler.cancelTask(nId);
-					if (skyYDiff.containsKey(player)){
+					if (skyYDiff.containsKey(player)) {
 						skyYDiff.remove(player);
 					}
 					return;
@@ -310,14 +333,32 @@ public class BootsEquipEvent implements Listener {
 						}
 						taskRunning.remove(player);
 						skyTaskRunning.remove(player);
-						if (skyYDiff.containsKey(player)){
+						if (skyYDiff.containsKey(player)) {
 							skyYDiff.remove(player);
 						}
+						Object[] blockArr = bridgeBlockDecay.keySet().toArray();
+						if (blockArr.length != 0) {
+							for (int i = 0; i < blockArr.length; i++) {
+								final Block block = (Block) blockArr[i];
+								int delay = runTime.get(player) - bridgeBlockDecay.get(block);
+								delay = decayDelay - delay;
+								new BukkitRunnable(){
+									@Override
+									public void run(){
+										block.setType(bridgeBlock.get(block));
+										block.setData(bridgeData.get(block));
+										bridgeBlock.remove(block);
+										bridgeData.remove(block);
+										bridgeBlockDecay.remove(block);
+									}
+								}.runTaskLater(plugin, delay);
+							}
+						}
+						runTime.remove(player);
 						scheduler.cancelTask(nId);
 						return;
 					}
 				}
-				int decayDelay = plugin.getConfig().getInt("SkywalkBootsBlockDecayDelay");
 				// PotionEffect[] pearr = (PotionEffect[])
 				// player.getActivePotionEffects().toArray();
 				// if (!(player.hasPotionEffect(PotionEffectType.SLOW))) {
@@ -345,32 +386,37 @@ public class BootsEquipEvent implements Listener {
 				final Location blockLoc = player.getLocation();
 				blockLoc.setY(playerLoc.getY() - 1);
 				final Block block = blockLoc.getBlock();
+				Object[] blockDecaySet = bridgeBlockDecay.keySet().toArray();
+				if (blockDecaySet.length > 0) {
+					Block dBlock = (Block) blockDecaySet[0];
+					if (runTime.get(player) - bridgeBlockDecay.get(dBlock) >= decayDelay) {
+						dBlock.setType(bridgeBlock.get(dBlock));
+						dBlock.setData(bridgeData.get(dBlock));
+						bridgeBlock.remove(dBlock);
+						bridgeData.remove(dBlock);
+						bridgeBlockDecay.remove(dBlock);
+					}
+				}
 				if (block.getType().equals(Material.GLASS))
 					return;
 				Material blockBakmid = blockLoc.getBlock().getType();
 				Material blockBak = blockBakmid;
 				bridgeData.put(block, block.getData());
 				bridgeBlock.put(block, blockBak);
+				bridgeBlockDecay.put(block, runTime.get(player));
 				block.setType(Material.GLASS);
-				if (decayDelay > 0) {
-					// bridgeBlock.push(block);
-					new BukkitRunnable() {
-						@Override
-						public void run() {
-							/*
-							 * if (!(bridgeBlock.search(block) < 0)) {
-							 * bridgeBlock.remove(bridgeBlock.search(block)); }
-							 */
-							if (bridgeBlock.containsKey(block)) {
-								block.setType(bridgeBlock.get(block));
-								block.setData(bridgeData.get(block));
-								bridgeBlock.remove(block);
-								bridgeData.remove(block);
-							}
-						}
-					}.runTaskLater(plugin, decayDelay);
 
-				}
+				/*
+				 * if (decayDelay > 0) { // bridgeBlock.push(block); new
+				 * BukkitRunnable() {
+				 * 
+				 * @Override public void run() { if
+				 * (bridgeBlock.containsKey(block)) {
+				 * block.setType(bridgeBlock.get(block));
+				 * block.setData(bridgeData.get(block));
+				 * bridgeBlock.remove(block); bridgeData.remove(block); } }
+				 * }.runTaskLater(plugin, decayDelay); }
+				 */
 			}
 		}, 5L, 2L);
 		id.put(player, tempId);
