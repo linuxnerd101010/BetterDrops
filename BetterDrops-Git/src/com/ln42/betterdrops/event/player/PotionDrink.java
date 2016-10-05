@@ -44,18 +44,19 @@ public class PotionDrink implements Listener {
 		} else if (Tools.isSpecialItem(item, "xpBottle")) {
 			if (plugin.getConfig().getBoolean("XPStorageDrop")) {
 				int xp = Tools.getXPForLevel(player.getLevel());
-				for (int i = 0; i <= 40; i++){
-					System.out.println("Ingoing: " + Integer.toString(i));
-					System.out.println("Outcome: " + Integer.toString(Tools.getXPForLevel(i)));
-					System.out.println("Reversed: " + Integer.toString(Tools.getLevelForXP(Tools.getXPForLevel(i))[0]));
-					System.out.println("Remainder: " + Integer.toString(Tools.getLevelForXP(Tools.getXPForLevel(i))[1]));
-				}
-				xp += player.getTotalExperience();
+				float fbExtra = player.getExpToLevel() * player.getExp();
+				xp += (int) fbExtra;
 				ItemStack fullBottle = null;
 				if (xp >= 500) {
 					fullBottle = Tools.getFullXpStorageBottle(500);
 					int[] arr = Tools.getLevelForXP(xp - 500);
 					int lvl = arr[0];
+					int extra = arr[1];
+					player.setLevel(0);
+					player.setExp(0);
+					player.setLevel(lvl);
+					player.giveExp(extra);
+					/*
 					if (player.getTotalExperience() >= arr[1]) {
 						arr[1] *= -1;
 						player.giveExp(arr[1]);
@@ -65,14 +66,14 @@ public class PotionDrink implements Listener {
 						lvl -= 1;
 						xpChange -= Tools.getXPForLevel(lvl);
 						xpChange -= arr[1] - player.getTotalExperience();
-						player.setLevel(0);
-						player.setTotalExperience(0);
 						player.setLevel(lvl);
 						player.giveExp(xpChange);
 					}
+					*/
 				} else if (xp != 0) {
 					fullBottle = Tools.getFullXpStorageBottle(xp);
 					player.setLevel(0);
+					player.setExp(0);
 				} else {
 					event.setCancelled(true);
 					return;

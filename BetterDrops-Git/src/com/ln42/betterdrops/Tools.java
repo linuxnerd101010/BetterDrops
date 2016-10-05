@@ -488,7 +488,7 @@ public class Tools {
 			xp *= 2.5;
 			xp -= 40.5 * lvl;
 			xp += 360;
-		} else if (lvl > 32) {
+		} else if (lvl >= 32) {
 			xp = lvl * lvl;
 			xp *= 4.5;
 			xp -= 162.5 * lvl;
@@ -503,13 +503,12 @@ public class Tools {
 		}
 		int[] out = new int[] { 0, 0 };
 		int lXp = 0;
-		for (int level = 0; level <= 100; level++){
+		for (int level = 1; level <= 100; level++){
 			lXp = getXPForLevel(level);
 			if (xp >= lXp) {
 				out[0]++;
 			} else {
-				out[1] = lXp - xp;
-				out[1] += getXPForLevel(level);
+				out[1] = xp - getXPForLevel(out[0]);
 				break;
 			}
 		}

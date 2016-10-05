@@ -12,7 +12,6 @@ public class XPBottleHandler implements Listener {
 		if (ProjectileLaunch.thrownSpecialItems.containsKey(entity)){
 			int amount = ProjectileLaunch.thrownSpecialItems.get(entity);	
 			ProjectileLaunch.thrownSpecialItems.remove(entity);
-			entity.getServer().broadcastMessage(Integer.toString(amount));
 			event.setExperience(amount);
 		}
 	}
