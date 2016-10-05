@@ -15,6 +15,7 @@ import org.bukkit.entity.Shulker;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Witch;
 import org.bukkit.entity.Zombie;
+import org.bukkit.entity.Skeleton.SkeletonType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -65,16 +66,13 @@ public class PlayerKill implements Listener {
 			} else if (damageE.getCause().equals(DamageCause.LIGHTNING)) {
 				if (plugin.getConfig().getBoolean("LightningStrikeEgg")) {
 					if (killedE instanceof Player) {
-						System.out.println("Check 0.");
 						Player killedPlayer = (Player) killedE;
 						if (PlayerThrowEgg.strikeActive.containsKey(killedPlayer)) {
-							System.out.println("Check 1.");
 							if (killedPlayer.getWorld().getGameRuleValue("keepInventory").equals("false")) {
-								System.out.println("Check 2.");
 								Location l = killedPlayer.getLocation();
-								new BukkitRunnable(){
+								new BukkitRunnable() {
 									@Override
-									public void run(){
+									public void run() {
 										for (int i = 0; i != items.length - 1; i++) {
 											killedPlayer.getWorld().dropItem(l, (ItemStack) items[i]);
 										}
@@ -117,23 +115,17 @@ public class PlayerKill implements Listener {
 			if (damageE.getCause().equals(DamageCause.LIGHTNING)) {
 				if (plugin.getConfig().getBoolean("LightningStrikeEgg")) {
 					if (killedE instanceof Player) {
-						System.out.println("Check 0.");
 						if (PlayerThrowEgg.strikeActive.containsKey(killedPlayer)) {
-							System.out.println("Check 1.");
 							if (killedPlayer.getWorld().getGameRuleValue("keepInventory").equals("false")) {
-								System.out.println("Check 2.");
 								Location l = killedPlayer.getLocation();
-								System.out.println(items.length);
-								new BukkitRunnable(){
+								new BukkitRunnable() {
 									@Override
-									public void run(){
+									public void run() {
 										for (int i = -1; i != items.length - 1; i++) {
-											if (i < 0){
+											if (i < 0) {
 												i++;
 											}
 											killedPlayer.getWorld().dropItem(l, (ItemStack) items[i]);
-											ItemStack item = (ItemStack) items[i];
-											System.out.println(item.getType().toString());
 										}
 									}
 								}.runTaskLater(plugin, 20);
@@ -189,11 +181,14 @@ public class PlayerKill implements Listener {
 				looting -= Tools.potionEffectLevel(killer, PotionEffectType.UNLUCK);
 			}
 			if (plugin.getConfig().getBoolean("MobHeadsDrop")) {
-				if (Tools.Odds(Main.oddsConfig.getInt("SkeletonHeadDrop"), looting)) {
-					short damage = 0;
-					byte data = 0;
-					ItemStack drop = new ItemStack(Material.SKULL_ITEM, 1, damage, data);
-					killedE.getWorld().dropItem(killedE.getLocation(), drop);
+				Skeleton sk = (Skeleton) killedE;
+				if (!(sk.getSkeletonType().equals(SkeletonType.WITHER))) {
+					if (Tools.Odds(Main.oddsConfig.getInt("SkeletonHeadDrop"), looting)) {
+						short damage = 0;
+						byte data = 0;
+						ItemStack drop = new ItemStack(Material.SKULL_ITEM, 1, damage, data);
+						killedE.getWorld().dropItem(killedE.getLocation(), drop);
+					}
 				}
 			}
 			if (plugin.getConfig().getBoolean("PoweredSkeletons")) {

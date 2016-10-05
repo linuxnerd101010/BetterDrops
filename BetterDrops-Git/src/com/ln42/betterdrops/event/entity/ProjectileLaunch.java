@@ -1,4 +1,4 @@
-package com.ln42.betterdrops.event.player;
+package com.ln42.betterdrops.event.entity;
 
 import java.util.HashMap;
 
@@ -12,6 +12,7 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.projectiles.ProjectileSource;
 
 import com.ln42.betterdrops.Main;
+import com.ln42.betterdrops.event.player.PlayerClick;
 
 public class ProjectileLaunch implements Listener {
 	public static HashMap<Entity, Integer> thrownSpecialItems = new HashMap<Entity, Integer>();

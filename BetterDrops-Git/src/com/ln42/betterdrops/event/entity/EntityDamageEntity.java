@@ -26,7 +26,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import com.ln42.betterdrops.Main;
 import com.ln42.betterdrops.Tools;
 import com.ln42.betterdrops.event.player.PlayerThrowEgg;
-import com.ln42.betterdrops.event.player.ProjectileLaunch;
 
 public class EntityDamageEntity implements Listener {
 	private Main plugin;

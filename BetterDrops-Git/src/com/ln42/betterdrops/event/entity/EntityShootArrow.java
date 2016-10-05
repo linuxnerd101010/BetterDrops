@@ -230,16 +230,6 @@ public class EntityShootArrow implements Listener {
 					if (!(explodeLoc.containsKey(shooter))) {
 						explodeLoc.put(shooter, arrowLoc);
 					}
-					/*
-					 * Vector vec = fvec; vec.multiply(.5); if
-					 * (arrow.getVelocity().getX() < vec.getX()){ if
-					 * (arrow.getVelocity().getZ() < vec.getZ()){
-					 * arrowLoc.setY(arrowLoc.getY() + .3);
-					 * arrowLoc.setX(arrowLoc.getX() + .3);
-					 * arrowLoc.setX(arrowLoc.getX() + .3); } }
-					 * System.out.println("Explosion Loc: " +
-					 * arrowLoc.toString());
-					 */
 					world.createExplosion(explodeLoc.get(shooter), 3);
 					explodeLoc.remove(shooter);
 					arrow.remove();

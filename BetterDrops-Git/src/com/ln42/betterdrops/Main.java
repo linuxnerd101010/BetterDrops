@@ -17,6 +17,7 @@ import com.ln42.betterdrops.commands.PluginCommand;
 import com.ln42.betterdrops.event.block.BlockBreak;
 import com.ln42.betterdrops.event.entity.EntityDamageEntity;
 import com.ln42.betterdrops.event.entity.EntitySpawn;
+import com.ln42.betterdrops.event.entity.ProjectileLaunch;
 import com.ln42.betterdrops.event.entity.XPBottleHandler;
 import com.ln42.betterdrops.event.entity.EntityShootArrow;
 import com.ln42.betterdrops.event.inventory.AnvilEvent;
@@ -27,7 +28,6 @@ import com.ln42.betterdrops.event.player.PlayerJoin;
 import com.ln42.betterdrops.event.player.PlayerKill;
 import com.ln42.betterdrops.event.player.PlayerThrowEgg;
 import com.ln42.betterdrops.event.player.PotionDrink;
-import com.ln42.betterdrops.event.player.ProjectileLaunch;
 
 public class Main extends JavaPlugin implements Listener {
 	public static FileConfiguration oddsConfig = null;

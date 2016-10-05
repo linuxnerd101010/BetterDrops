@@ -5,8 +5,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ExpBottleEvent;
 
-import com.ln42.betterdrops.event.player.ProjectileLaunch;
-
 public class XPBottleHandler implements Listener {
 	@EventHandler
 	public void onExpBottleThrow(ExpBottleEvent event){

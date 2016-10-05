@@ -23,6 +23,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import com.ln42.betterdrops.Tools;
+import com.ln42.betterdrops.event.entity.ProjectileLaunch;
 
 public class PlayerThrowEgg implements Listener {
 	private com.ln42.betterdrops.Main plugin;

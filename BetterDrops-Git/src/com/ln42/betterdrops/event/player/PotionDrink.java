@@ -3,6 +3,7 @@
  */
 package com.ln42.betterdrops.event.player;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -43,31 +44,33 @@ public class PotionDrink implements Listener {
 		} else if (Tools.isSpecialItem(item, "xpBottle")) {
 			if (plugin.getConfig().getBoolean("XPStorageDrop")) {
 				int xp = Tools.getXPForLevel(player.getLevel());
+				for (int i = 0; i <= 40; i++){
+					System.out.println("Ingoing: " + Integer.toString(i));
+					System.out.println("Outcome: " + Integer.toString(Tools.getXPForLevel(i)));
+					System.out.println("Reversed: " + Integer.toString(Tools.getLevelForXP(Tools.getXPForLevel(i))[0]));
+					System.out.println("Remainder: " + Integer.toString(Tools.getLevelForXP(Tools.getXPForLevel(i))[1]));
+				}
 				xp += player.getTotalExperience();
-				//player.sendMessage(Integer.toString(Tools.getXPForLevel(player.getLevel())));
-				//player.sendMessage(Integer.toString(player.getTotalExperience()));
 				ItemStack fullBottle = null;
 				if (xp >= 500) {
 					fullBottle = Tools.getFullXpStorageBottle(500);
 					int[] arr = Tools.getLevelForXP(xp - 500);
 					int lvl = arr[0];
-					if (player.getTotalExperience() >= arr[1]){
-						player.sendMessage("Bar is greater than remainder."); //DEBUG
+					if (player.getTotalExperience() >= arr[1]) {
 						arr[1] *= -1;
 						player.giveExp(arr[1]);
 						player.setLevel(lvl);
 					} else {
-						player.sendMessage("Bar is less than remainder."); //DEBUG
 						int xpChange = Tools.getXPForLevel(lvl);
 						lvl -= 1;
 						xpChange -= Tools.getXPForLevel(lvl);
 						xpChange -= arr[1] - player.getTotalExperience();
-						player.sendMessage(Integer.toString(arr[1]));
-						player.sendMessage(Integer.toString(xpChange));
+						player.setLevel(0);
+						player.setTotalExperience(0);
 						player.setLevel(lvl);
 						player.giveExp(xpChange);
 					}
-				} else if (xp != 0){
+				} else if (xp != 0) {
 					fullBottle = Tools.getFullXpStorageBottle(xp);
 					player.setLevel(0);
 				} else {
@@ -75,10 +78,19 @@ public class PotionDrink implements Listener {
 					return;
 				}
 				final ItemStack fFullBottle = fullBottle;
-				new BukkitRunnable(){
+				new BukkitRunnable() {
 					@Override
-					public void run(){
-						player.setItemInHand(fFullBottle);
+					public void run() {
+						if (player.getItemInHand().getType().equals(Material.GLASS_BOTTLE)) {
+							player.setItemInHand(fFullBottle);
+						} else {
+							if (player.getInventory().contains(Material.GLASS_BOTTLE)) {
+								player.getInventory().remove(Material.GLASS_BOTTLE);
+								player.getWorld().dropItem(player.getLocation(), fFullBottle);
+							} else {
+								player.getWorld().dropItem(player.getLocation(), fFullBottle);
+							}
+						}
 					}
 				}.runTaskLater(plugin, 10);
 			}
