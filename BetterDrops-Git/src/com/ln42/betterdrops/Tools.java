@@ -133,7 +133,7 @@ public class Tools {
 			item.setItemMeta(itemMeta);
 			return item;
 		}
-		if (name.equals("xpBottle")){
+		if (name.equals("xpBottle")) {
 			ItemStack item = new ItemStack(Material.BOW);
 			item.setTypeId(373);
 			ItemMeta itemMeta = item.getItemMeta();
@@ -181,13 +181,13 @@ public class Tools {
 		Random rand = new Random();
 		int randomNum = rand.nextInt((ichance - 1) + 1) + 1;
 		int num = ichance / 2;
-		if (ichance > 4){
-			if (ichance % 2 != 0){
+		if (ichance > 4) {
+			if (ichance % 2 != 0) {
 				num += 1;
 			}
 		}
-		//System.out.println(Integer.toString(randomNum));
-		//System.out.println(Integer.toString(num));
+		// System.out.println(Integer.toString(randomNum));
+		// System.out.println(Integer.toString(num));
 		if (randomNum == num) {
 			return true;
 		} else {
@@ -282,7 +282,7 @@ public class Tools {
 			rand *= Math.random() * 2;
 		}
 		rand *= max;
-		if (rand >= realMax){
+		if (rand >= realMax) {
 			return (short) realMax;
 		}
 		return (short) rand;
@@ -301,73 +301,73 @@ public class Tools {
 		}
 		List<String> lore = item.getItemMeta().getLore();
 		if (lore.contains("Feet o' Flames!")) {
-			if (item.getType().equals(Material.GOLD_BOOTS)){
+			if (item.getType().equals(Material.GOLD_BOOTS)) {
 				return true;
 			} else {
 				return false;
 			}
 		} else if (lore.contains("Floating away...")) {
-			if (item.getType().equals(Material.GOLD_BOOTS)){
+			if (item.getType().equals(Material.GOLD_BOOTS)) {
 				return true;
 			} else {
 				return false;
 			}
 		} else if (lore.contains("Of no relation to Anakin")) {
-			if (item.getType().equals(Material.GOLD_BOOTS)){
+			if (item.getType().equals(Material.GOLD_BOOTS)) {
 				return true;
 			} else {
 				return false;
 			}
 		} else if (lore.contains("Down with Newton!")) {
-			if (item.getType().equals(Material.BOW)){
+			if (item.getType().equals(Material.BOW)) {
 				return true;
 			} else {
 				return false;
 			}
 		} else if (lore.contains("Redneck Style!")) {
-			if (item.getType().equals(Material.BOW)){
+			if (item.getType().equals(Material.BOW)) {
 				return true;
 			} else {
 				return false;
 			}
 		} else if (lore.contains("Explosions!")) {
-			if (item.getType().equals(Material.BOW)){
+			if (item.getType().equals(Material.BOW)) {
 				return true;
 			} else {
 				return false;
 			}
 		} else if (lore.contains("0:30")) {
-			if (item.getTypeId() == 373){
+			if (item.getTypeId() == 373) {
 				return true;
 			} else {
 				return false;
 			}
 		} else if (lore.contains("Aim and Click to use.")) {
-			if (item.getType().equals(Material.STICK)){
+			if (item.getType().equals(Material.STICK)) {
 				return true;
 			} else {
 				return false;
 			}
 		} else if (lore.contains("Freeze 'em!")) {
-			if (item.getType().equals(Material.BOW)){
+			if (item.getType().equals(Material.BOW)) {
 				return true;
 			} else {
 				return false;
 			}
 		} else if (lore.contains("Thou shalt not get caught.")) {
-			if (item.getType().equals(Material.STICK)){
+			if (item.getType().equals(Material.STICK)) {
 				return true;
 			} else {
 				return false;
 			}
-		}else if (lore.contains("Holds up to 500 XP.")){
-			if (item.getTypeId() == 373){
+		} else if (lore.contains("Holds up to 500 XP.")) {
+			if (item.getTypeId() == 373) {
 				return true;
 			} else {
 				return false;
 			}
 		} else if (lore.contains("Kill (almost) guaranteed.")) {
-			if (item.getType().equals(Material.EGG)){
+			if (item.getType().equals(Material.EGG)) {
 				return true;
 			} else {
 				return false;
@@ -427,7 +427,8 @@ public class Tools {
 		}
 		return 0;
 	}
-	public static PotionEffect getPotionEffect(Player player, PotionEffectType type){
+
+	public static PotionEffect getPotionEffect(Player player, PotionEffectType type) {
 		Object[] parr = player.getActivePotionEffects().toArray();
 		for (int i = 0; i <= parr.length - 1; i++) {
 			PotionEffect effect = (PotionEffect) parr[i];
@@ -437,33 +438,35 @@ public class Tools {
 		}
 		return null;
 	}
-	public static int isFullXpStorageBottle(ItemStack item){
-		if (!(item.getType().equals(Material.EXP_BOTTLE))){
+
+	public static int isFullXpStorageBottle(ItemStack item) {
+		if (!(item.getType().equals(Material.EXP_BOTTLE))) {
 			return 0;
 		}
 		ItemMeta meta = item.getItemMeta();
-		if (meta.getDisplayName() == null){
+		if (meta.getDisplayName() == null) {
 			return 0;
 		}
-		if (!(meta.getDisplayName().equals(ChatColor.GREEN + "Full XP Storage Bottle"))){
+		if (!(meta.getDisplayName().equals(ChatColor.GREEN + "Full XP Storage Bottle"))) {
 			return 0;
 		}
-		if (!(meta.hasLore())){
+		if (!(meta.hasLore())) {
 			return 0;
 		}
 		String lore = meta.getLore().get(1);
 		int value = 0;
-		try{
+		try {
 			value = Integer.parseInt(lore);
-		} catch (java.lang.NumberFormatException e){
+		} catch (java.lang.NumberFormatException e) {
 			return 0;
 		}
-		if (value == 0){
+		if (value == 0) {
 			return 0;
 		}
 		return value;
 	}
-	public static ItemStack getFullXpStorageBottle(int amount){
+
+	public static ItemStack getFullXpStorageBottle(int amount) {
 		ItemStack item = new ItemStack(Material.EXP_BOTTLE);
 		ItemMeta itemMeta = item.getItemMeta();
 		itemMeta.setDisplayName(ChatColor.GREEN + "Full XP Storage Bottle");
@@ -474,38 +477,47 @@ public class Tools {
 		item.setItemMeta(itemMeta);
 		return item;
 	}
+
 	public static int getXPForLevel(int lvl) {
-        int xp = 0;
-		if (lvl <= 16){
+		int xp = 0;
+		if (lvl <= 16) {
 			xp = lvl * lvl;
 			xp += lvl * 6;
-        } else if (lvl <= 31){
-        	xp = lvl * lvl;
-        	xp *= 2.5;
-        	xp -= 40.5 * lvl;
-        	xp += 360;
-        } else if (lvl > 32){
-        	xp = lvl * lvl;
-        	xp *= 4.5;
-        	xp -= 162.5 * lvl;
-        	xp += 2220;
-        }
+		} else if (lvl <= 31) {
+			xp = lvl * lvl;
+			xp *= 2.5;
+			xp -= 40.5 * lvl;
+			xp += 360;
+		} else if (lvl > 32) {
+			xp = lvl * lvl;
+			xp *= 4.5;
+			xp -= 162.5 * lvl;
+			xp += 2220;
+		}
 		return xp;
-    }
-	public static int[] getLevelForXP(int xp){
-		if (xp < 0){
+	}
+
+	public static int[] getLevelForXP(int xp) {
+		if (xp < 0) {
 			return null;
 		}
-		int[] out = new int[]{0, 0};
-		int lvl = 0;
-		int thisXp = 0;
-		int lastXp = 0;
-		for(lvl = 0; (!(xp >= lastXp && xp <= thisXp)); lvl++){
-			lastXp = thisXp;
-			thisXp = getXPForLevel(lvl);
-			out[0] = lvl;
-			out[1] = xp - lastXp;
+		int[] out = new int[] { 0, 0 };
+		int lXp = 0;
+		for (int level = 0; level <= 100; level++){
+			lXp = getXPForLevel(level);
+			if (xp >= lXp) {
+				out[0]++;
+			} else {
+				out[1] = lXp - xp;
+				out[1] += getXPForLevel(level);
+				break;
+			}
 		}
 		return out;
+		/*
+		 * int lvl = 0; int thisXp = 0; int lastXp = 0; for(lvl = 0; (!(xp >=
+		 * lastXp && xp <= thisXp)); lvl++){ lastXp = thisXp; thisXp =
+		 * getXPForLevel(lvl); out[0] = lvl; out[1] = xp - lastXp; } return out;
+		 */
 	}
 }
