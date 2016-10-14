@@ -13,8 +13,10 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.ShulkerBullet;
+import org.bukkit.entity.WitherSkull;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
@@ -26,7 +28,9 @@ import com.ln42.betterdrops.Tools;
 
 public class PlayerClick implements Listener {
 	// public static boolean cooldown = false;
-	public static HashMap<Player, Boolean> cooldown = new HashMap<Player, Boolean>();
+	public static HashMap<Player, Boolean> sBLCooldown = new HashMap<Player, Boolean>();
+	public static HashMap<Player, Boolean> wSLCooldownBlack = new HashMap<Player, Boolean>();
+	public static HashMap<Player, Boolean> wSLCooldownBlue = new HashMap<Player, Boolean>();
 	public static HashMap<Player, Boolean> strikeEggThrown = new HashMap<Player, Boolean>();
 	public static HashMap<Player, Integer> expStorageThrown = new HashMap<Player, Integer>();
 	private com.ln42.betterdrops.Main plugin;
@@ -67,8 +71,8 @@ public class PlayerClick implements Listener {
 					if (entityFound == false) {
 						return;
 					}
-					if (cooldown.containsKey(player)) {
-						if (cooldown.get(player)) {
+					if (sBLCooldown.containsKey(player)) {
+						if (sBLCooldown.get(player)) {
 							return;
 						}
 					}
@@ -79,16 +83,71 @@ public class PlayerClick implements Listener {
 							bullet.getWorld().playSound(l, Sound.ENTITY_SHULKER_SHOOT, .4F, 1.5F);
 							bullet.setShooter(player);
 							bullet.setTarget(earr[i]);
-							setCooldown(player);
-							randomBreak(player, item);
+							int time = plugin.getConfig().getInt("ShulkerBLCooldown");
+							if (time <= 0) {
+								return;
+							}
+							sBLCooldown.put(player, true);
+							new BukkitRunnable() {
+								@Override
+								public void run() {
+									sBLCooldown.remove(player);
+								}
+							}.runTaskLater(this.plugin, time);
+							randomBreak(player, item, Main.oddsConfig.getInt("ShulkerLauncherBreak"));
 							return;
 						}
 					}
 				}
 			}
-			// if (Tools.isSpecialItem(item, "fireballWand")) {
-			// player.launchProjectile(DragonFireball.class);
-			// }
+			if (plugin.getConfig().getBoolean("WitherSkullLauncherDrop")) {
+				if (Tools.isSpecialItem(item, "witherSL")) {
+					boolean rightClick = false;
+					if (event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
+						rightClick = true;
+					} else if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+						rightClick = true;
+					}
+					if (rightClick) {
+						if (wSLCooldownBlue.containsKey(player)) {
+							return;
+						}
+					} else {
+						if (wSLCooldownBlack.containsKey(player)) {
+							return;
+						}
+					}
+					WitherSkull skull = player.launchProjectile(WitherSkull.class, player.getVelocity());
+					randomBreak(player, item, Main.oddsConfig.getInt("WitherLauncherBreak"));
+					player.playSound(player.getLocation(), Sound.ENTITY_WITHER_SHOOT, .4F, 1.5F);
+					int blackTime = plugin.getConfig().getInt("WitherSLBlackCooldown");
+					int blueTime = plugin.getConfig().getInt("WitherSLBlueCooldown");
+					if (rightClick) {
+						skull.setCharged(true);
+						if (blueTime <= 0) {
+							return;
+						}
+						wSLCooldownBlue.put(player, true);
+						new BukkitRunnable() {
+							@Override
+							public void run() {
+								wSLCooldownBlue.remove(player);
+							}
+						}.runTaskLater(this.plugin, blueTime);
+					} else {
+						if (blackTime <= 0) {
+							return;
+						}
+						wSLCooldownBlack.put(player, true);
+						new BukkitRunnable() {
+							@Override
+							public void run() {
+								wSLCooldownBlack.remove(player);
+							}
+						}.runTaskLater(this.plugin, blackTime);
+					}
+				}
+			}
 		}
 		if (plugin.getConfig().getBoolean("LightningStrikeEgg")) {
 			if (item.getType().equals(Material.EGG)) {
@@ -132,26 +191,12 @@ public class PlayerClick implements Listener {
 		return ent;
 	}
 
-	public void setCooldown(final Player player) {
-		int time = plugin.getConfig().getInt("ShulkerBLCooldown");
-		if (time <= 0) {
-			return;
-		}
-		cooldown.put(player, true);
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				cooldown.remove(player);
-			}
-		}.runTaskLater(this.plugin, time);
-	}
-
 	@SuppressWarnings("deprecation")
-	public void randomBreak(Player player, ItemStack item) {
+	public void randomBreak(Player player, ItemStack item, int chance) {
 		int luck = 0;
 		luck += Tools.potionEffectLevel(player, PotionEffectType.UNLUCK);
 		luck -= Tools.potionEffectLevel(player, PotionEffectType.LUCK);
-		if (Tools.Odds(Main.oddsConfig.getInt("ShulkerLauncherBreak"), luck)) {
+		if (Tools.Odds(chance, luck)) {
 			player.getWorld().playSound(player.getLocation(), Sound.ITEM_SHIELD_BREAK, 1, 1.5F);
 			item.setAmount(item.getAmount() - 1);
 			if (item.getAmount() == 0) {

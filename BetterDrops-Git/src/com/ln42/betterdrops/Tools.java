@@ -12,6 +12,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -106,21 +107,25 @@ public class Tools {
 		if (name.equals("shulkerBL")) {
 			ItemStack launcher = new ItemStack(Material.STICK);
 			ItemMeta meta = launcher.getItemMeta();
+			meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 			meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Shulker Bullet Shooter");
 			ArrayList<String> launcherLore = new ArrayList<String>();
 			launcherLore.add("Aim and Click to use.");
 			meta.setLore(launcherLore);
 			launcher.setItemMeta(meta);
+			launcher.addUnsafeEnchantment(Enchantment.ARROW_INFINITE, 1);
 			return launcher;
 		}
 		if (name.equals("theftWand")) {
 			ItemStack item = new ItemStack(Material.STICK);
 			ItemMeta itemMeta = item.getItemMeta();
+			itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 			itemMeta.setDisplayName(ChatColor.DARK_GRAY + "Wand of Theft");
 			ArrayList<String> itemLore = new ArrayList<String>();
 			itemLore.add("Thou shalt not get caught.");
 			itemMeta.setLore(itemLore);
 			item.setItemMeta(itemMeta);
+			item.addUnsafeEnchantment(Enchantment.ARROW_INFINITE, 1);
 			return item;
 		}
 		if (name.equals("strikeEgg")) {
@@ -144,14 +149,18 @@ public class Tools {
 			item.setItemMeta(itemMeta);
 			return item;
 		}
-		/*
-		 * if (name.equals("fireballWand")) { ItemStack item = new
-		 * ItemStack(Material.STICK); ItemMeta itemMeta = item.getItemMeta();
-		 * itemMeta.setDisplayName(ChatColor.RED + "Fireball Wand");
-		 * ArrayList<String> itemLore = new ArrayList<String>();
-		 * itemLore.add("DEBUG_LORE"); itemMeta.setLore(itemLore);
-		 * item.setItemMeta(itemMeta); return item; }
-		 */else {
+		if (name.equals("witherSL")) {
+			ItemStack item = new ItemStack(Material.STICK);
+			ItemMeta itemMeta = item.getItemMeta();
+			itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+			itemMeta.setDisplayName(ChatColor.BLUE + "Wither Skull Launcher");
+			ArrayList<String> itemLore = new ArrayList<String>();
+			itemLore.add("DEBUG_LORE");
+			itemMeta.setLore(itemLore);
+			item.setItemMeta(itemMeta);
+			item.addUnsafeEnchantment(Enchantment.ARROW_INFINITE, 1);
+			return item;
+		} else {
 			return null;
 		}
 	}
@@ -366,6 +375,12 @@ public class Tools {
 			} else {
 				return false;
 			}
+		} else if (lore.contains("DEBUG_LORE")){
+			if (item.getType().equals(Material.STICK)) {
+				return true;
+			} else {
+				return false;
+			}
 		} else if (lore.contains("Kill (almost) guaranteed.")) {
 			if (item.getType().equals(Material.EGG)) {
 				return true;
@@ -503,7 +518,7 @@ public class Tools {
 		}
 		int[] out = new int[] { 0, 0 };
 		int lXp = 0;
-		for (int level = 1; level <= 100; level++){
+		for (int level = 1; level <= 100; level++) {
 			lXp = getXPForLevel(level);
 			if (xp >= lXp) {
 				out[0]++;

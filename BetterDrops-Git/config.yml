@@ -46,6 +46,13 @@ ShulkerBLSightRange: 50
 ## Theft Wand related options:
 TheftWandDrop: true
 #
+## Wither Skull Launcher related options:
+WitherSkullLauncherDrop: true
+# Configuration for the cooldown when shooting black skulls. Time is in ticks.
+WitherSLBlackCooldown: 80
+# Configuration for the cooldown when shooting blue skulls. Time is in ticks.
+WitherSLBlueCooldown: 40
+#
 ## Strike Egg related options:
 LightningStrikeEgg: true
 # The maximum number of lightning strikes:

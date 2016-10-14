@@ -93,6 +93,12 @@ public class PluginCommand implements CommandExecutor {
 				} else {
 					sender.sendMessage(ChatColor.RED + "Shulker Bullet Launcher is disabled.");
 				}
+				if (plugin.getConfig().getBoolean("WitherSkullLauncherDrop")) {
+					sender.sendMessage(ChatColor.BLUE + "witherSL" + ChatColor.RESET
+							+ "-A wand that shoots wither skulls. Left click for black skulls, right click for blue skulls.");
+				} else {
+					sender.sendMessage(ChatColor.RED + "Wither Skull Launcher is disabled.");
+				}
 				if (plugin.getConfig().getBoolean("TheftWandDrop")) {
 					sender.sendMessage(ChatColor.DARK_GRAY + "theftWand" + ChatColor.RESET
 							+ "-A wand that steals the item from whatever you hit with it, or moves it out of the target's hand. Dropped by Witches.");
@@ -133,8 +139,9 @@ public class PluginCommand implements CommandExecutor {
 				} else {
 					sender.sendMessage(ChatColor.RED + "Lightning Strike Egg is disabled.");
 				}
-				if (plugin.getConfig().getBoolean("XPStorageDrop")){
-					sender.sendMessage(ChatColor.GREEN + "xpBottle" + ChatColor.RESET + "-A bottle that when drunk stores up to 500 XP. Dropped by Emerald Ore Blocks.");
+				if (plugin.getConfig().getBoolean("XPStorageDrop")) {
+					sender.sendMessage(ChatColor.GREEN + "xpBottle" + ChatColor.RESET
+							+ "-A bottle that when drunk stores up to 500 XP. Dropped by Emerald Ore Blocks.");
 				} else {
 					sender.sendMessage(ChatColor.RED + "XP Storage Bottle is disabled.");
 				}
@@ -370,9 +377,14 @@ public class PluginCommand implements CommandExecutor {
 				sender.sendMessage(ChatColor.BOLD + "Key: " + ChatColor.RESET + "TheftWandMobBreakChance "
 						+ ChatColor.BOLD + "Value: " + ChatColor.RESET
 						+ Integer.toString(Main.oddsConfig.getInt("TheftWandMobBreakChance")));
-				sender.sendMessage(ChatColor.BOLD + "Key: " + ChatColor.RESET + "XPStorageDrop "
+				sender.sendMessage(ChatColor.BOLD + "Key: " + ChatColor.RESET + "WitherLauncherDrop "
 						+ ChatColor.BOLD + "Value: " + ChatColor.RESET
-						+ Integer.toString(Main.oddsConfig.getInt("XPStorageDrop")));
+						+ Integer.toString(Main.oddsConfig.getInt("WitherLauncherDrop")));
+				sender.sendMessage(ChatColor.BOLD + "Key: " + ChatColor.RESET + "WitherLauncherBreak "
+						+ ChatColor.BOLD + "Value: " + ChatColor.RESET
+						+ Integer.toString(Main.oddsConfig.getInt("WitherLauncherBreak")));
+				sender.sendMessage(ChatColor.BOLD + "Key: " + ChatColor.RESET + "XPStorageDrop " + ChatColor.BOLD
+						+ "Value: " + ChatColor.RESET + Integer.toString(Main.oddsConfig.getInt("XPStorageDrop")));
 			} else if (secondArg.equals("set")) {
 				if (!(permission)) {
 					sender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
@@ -400,8 +412,8 @@ public class PluginCommand implements CommandExecutor {
 				try {
 					Main.oddsConfig.save(new File(plugin.getDataFolder(), "odds.yml"));
 				} catch (IOException e) {
-					System.out.println(
-							ChatColor.DARK_RED + "CRITICAL: Odds file not found! This is required for all odds functionality!");
+					System.out.println(ChatColor.DARK_RED
+							+ "CRITICAL: Odds file not found! This is required for all odds functionality!");
 				}
 				return true;
 			} else {
@@ -420,9 +432,9 @@ public class PluginCommand implements CommandExecutor {
 				sender.sendMessage(
 						ChatColor.BOLD + "Key: " + ChatColor.RESET + "PlayerHeadsDrop " + ChatColor.BOLD + "Value: "
 								+ ChatColor.RESET + Boolean.toString(plugin.getConfig().getBoolean("PlayerHeadsDrop")));
-				sender.sendMessage(
-						ChatColor.BOLD + "Key: " + ChatColor.RESET + "DispenserKillsHeadDrop " + ChatColor.BOLD + "Value: "
-								+ ChatColor.RESET + Boolean.toString(plugin.getConfig().getBoolean("DispenserKillsHeadDrop")));
+				sender.sendMessage(ChatColor.BOLD + "Key: " + ChatColor.RESET + "DispenserKillsHeadDrop "
+						+ ChatColor.BOLD + "Value: " + ChatColor.RESET
+						+ Boolean.toString(plugin.getConfig().getBoolean("DispenserKillsHeadDrop")));
 				sender.sendMessage(ChatColor.BOLD + "Key: " + ChatColor.RESET + "PoweredSkeletons " + ChatColor.BOLD
 						+ "Value: " + ChatColor.RESET
 						+ Boolean.toString(plugin.getConfig().getBoolean("PoweredSkeletons")));
@@ -442,9 +454,11 @@ public class PluginCommand implements CommandExecutor {
 				sender.sendMessage(ChatColor.BOLD + "Key: " + ChatColor.RESET + "BazookaBow " + ChatColor.BOLD
 						+ "Value: " + ChatColor.RESET + Boolean.toString(plugin.getConfig().getBoolean("BazookaBow")));
 				sender.sendMessage(ChatColor.BOLD + "Key: " + ChatColor.RESET + "ShotgunBow " + ChatColor.BOLD
-						+ "Value: " + ChatColor.RESET + Boolean.toString(plugin.getConfig().getBoolean("ShotgunArrowsComeFromInventory")));
-				sender.sendMessage(ChatColor.BOLD + "Key: " + ChatColor.RESET + "ShotgunArrowsComeFromInventory " + ChatColor.BOLD
-						+ "Value: " + ChatColor.RESET + Boolean.toString(plugin.getConfig().getBoolean("ShotgunArrowsComeFromInventory")));
+						+ "Value: " + ChatColor.RESET
+						+ Boolean.toString(plugin.getConfig().getBoolean("ShotgunArrowsComeFromInventory")));
+				sender.sendMessage(ChatColor.BOLD + "Key: " + ChatColor.RESET + "ShotgunArrowsComeFromInventory "
+						+ ChatColor.BOLD + "Value: " + ChatColor.RESET
+						+ Boolean.toString(plugin.getConfig().getBoolean("ShotgunArrowsComeFromInventory")));
 				sender.sendMessage(
 						ChatColor.BOLD + "Key: " + ChatColor.RESET + "ShotgunBowSpread " + ChatColor.BOLD + "Value: "
 								+ ChatColor.RESET + Double.toString(plugin.getConfig().getDouble("ShotgunBowSpread")));
@@ -480,6 +494,15 @@ public class PluginCommand implements CommandExecutor {
 				sender.sendMessage(
 						ChatColor.BOLD + "Key: " + ChatColor.RESET + "TheftWandDrop " + ChatColor.BOLD + "Value: "
 								+ ChatColor.RESET + Boolean.toString(plugin.getConfig().getBoolean("TheftWandDrop")));
+				sender.sendMessage(ChatColor.BOLD + "Key: " + ChatColor.RESET + "WitherSkullLauncherDrop " + ChatColor.BOLD
+						+ "Value: " + ChatColor.RESET	
+						+ Boolean.toString(plugin.getConfig().getBoolean("WitherSkullLauncherDrop")));
+				sender.sendMessage(
+						ChatColor.BOLD + "Key: " + ChatColor.RESET + "WitherSLBlackCooldown " + ChatColor.BOLD + "Value: "
+								+ ChatColor.RESET + Integer.toString(plugin.getConfig().getInt("WitherSLBlackCooldown")));
+				sender.sendMessage(
+						ChatColor.BOLD + "Key: " + ChatColor.RESET + "WitherSLBlueCooldown " + ChatColor.BOLD + "Value: "
+								+ ChatColor.RESET + Integer.toString(plugin.getConfig().getInt("WitherSLBlueCooldown")));
 				sender.sendMessage(ChatColor.BOLD + "Key: " + ChatColor.RESET + "LightningStrikeEgg " + ChatColor.BOLD
 						+ "Value: " + ChatColor.RESET
 						+ Boolean.toString(plugin.getConfig().getBoolean("LightningStrikeEgg")));
@@ -489,9 +512,9 @@ public class PluginCommand implements CommandExecutor {
 				sender.sendMessage(ChatColor.BOLD + "Key: " + ChatColor.RESET + "FlightPotionDrop " + ChatColor.BOLD
 						+ "Value: " + ChatColor.RESET
 						+ Boolean.toString(plugin.getConfig().getBoolean("FlightPotionDrop")));
-				sender.sendMessage(ChatColor.BOLD + "Key: " + ChatColor.RESET + "XPStorageDrop " + ChatColor.BOLD
-						+ "Value: " + ChatColor.RESET
-						+ Boolean.toString(plugin.getConfig().getBoolean("XPStorageDrop")));
+				sender.sendMessage(
+						ChatColor.BOLD + "Key: " + ChatColor.RESET + "XPStorageDrop " + ChatColor.BOLD + "Value: "
+								+ ChatColor.RESET + Boolean.toString(plugin.getConfig().getBoolean("XPStorageDrop")));
 				sender.sendMessage(ChatColor.BOLD + "Key: " + ChatColor.RESET + "PreventSpecialItemRepair "
 						+ ChatColor.BOLD + "Value: " + ChatColor.RESET
 						+ Boolean.toString(plugin.getConfig().getBoolean("PreventSpecialItemRepair")));

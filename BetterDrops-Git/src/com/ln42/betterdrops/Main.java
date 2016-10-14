@@ -81,7 +81,6 @@ public class Main extends JavaPlugin implements Listener {
 			pm.registerEvents(new EntityShootArrow(this), this);
 		}
 		if (this.getConfig().getBoolean("SpecialBootsDrop")) {
-			// pm.registerEvents(new PlayerWalk(this), this);
 			pm.registerEvents(new BootsEquipEvent(this), this);
 			pm.registerEvents(new PlayerJoin(this), this);
 		}
@@ -105,6 +104,8 @@ public class Main extends JavaPlugin implements Listener {
 		if (this.getConfig().getBoolean("ShulkerLauncherDrop")) {
 			pm.registerEvents(new PlayerClick(this), this);
 		} else if (this.getConfig().getBoolean("LightningStrikeEgg")) {
+			pm.registerEvents(new PlayerClick(this), this);
+		} else if (this.getConfig().getBoolean("WitherSkullLauncherDrop")){
 			pm.registerEvents(new PlayerClick(this), this);
 		}
 		if (this.getConfig().getBoolean("PoweredSkeletons")) {
@@ -149,6 +150,9 @@ public class Main extends JavaPlugin implements Listener {
 		configEntryType.put("ShulkerLauncherDrop", Boolean.class);
 		configEntryType.put("ShulkerBLCooldown", Integer.class);
 		configEntryType.put("ShulkerBLSightRange", Integer.class);
+		configEntryType.put("WitherSkullLauncherDrop", Boolean.class);
+		configEntryType.put("WitherSLBlackCooldown", Integer.class);
+		configEntryType.put("WitherSLBlueCooldown", Integer.class);
 		configEntryType.put("TheftWandDrop", Boolean.class);
 		configEntryType.put("FlightPotionDrop", Boolean.class);
 		configEntryType.put("LightningStrikeEgg", Boolean.class);

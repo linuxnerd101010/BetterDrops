@@ -14,6 +14,7 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Shulker;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Witch;
+import org.bukkit.entity.Wither;
 import org.bukkit.entity.Zombie;
 import org.bukkit.entity.Skeleton.SkeletonType;
 import org.bukkit.event.EventHandler;
@@ -135,8 +136,7 @@ public class PlayerKill implements Listener {
 					}
 				}
 			}
-		}
-		if (killedE instanceof Creeper) {
+		} else if (killedE instanceof Creeper) {
 			if (plugin.getConfig().getBoolean("MobHeadsDrop")) {
 				int looting = 0;
 				if (nP) {
@@ -152,8 +152,7 @@ public class PlayerKill implements Listener {
 					killedE.getWorld().dropItem(killedE.getLocation(), drop);
 				}
 			}
-		}
-		if (killedE instanceof Zombie) {
+		} else if (killedE instanceof Zombie) {
 			if (plugin.getConfig().getBoolean("MobHeadsDrop")) {
 				if (!(killedE instanceof PigZombie)) {
 					int looting = 0;
@@ -171,8 +170,7 @@ public class PlayerKill implements Listener {
 					}
 				}
 			}
-		}
-		if (killedE instanceof Skeleton) {
+		} else if (killedE instanceof Skeleton) {
 			int looting = 0;
 			if (nP) {
 				ItemStack weapon = killer.getItemInHand();
@@ -218,8 +216,52 @@ public class PlayerKill implements Listener {
 					killedE.getWorld().dropItem(killedE.getLocation(), bow);
 				}
 			}
-		}
-		if (killedE.getServer().getVersion().contains("MC: 1.9")) {
+		} else if (killedE instanceof PigZombie) {
+			if (plugin.getConfig().getBoolean("SpecialBootsDrop")) {
+				ItemStack weapon = killer.getItemInHand();
+				int looting = weapon.getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS);
+				looting += Tools.potionEffectLevel(killer, PotionEffectType.LUCK);
+				looting -= Tools.potionEffectLevel(killer, PotionEffectType.UNLUCK);
+				if (Tools.Odds(Main.oddsConfig.getInt("SpecialBootsDrop"), looting)) {
+					ItemStack drop = Tools.bootsSelect();
+					killedE.getWorld().dropItem(killedE.getLocation(), drop);
+				}
+			}
+		} else if (killedE instanceof Witch) {
+			ItemStack weapon = killer.getItemInHand();
+			int looting = weapon.getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS);
+			looting += Tools.potionEffectLevel(killer, PotionEffectType.LUCK);
+			looting -= Tools.potionEffectLevel(killer, PotionEffectType.UNLUCK);
+			if (plugin.getConfig().getBoolean("FlightPotionDrop")) {
+				if (Tools.Odds(Main.oddsConfig.getInt("FlightPotionDrop"), looting)) {
+					killedE.getWorld().dropItem(killedE.getLocation(), Tools.getSpecialItem("flightPotion"));
+				}
+			}
+			if (plugin.getConfig().getBoolean("TheftWandDrop")) {
+				if (Tools.Odds(Main.oddsConfig.getInt("TheftWandDropChance"), looting)) {
+					killedE.getWorld().dropItem(killedE.getLocation(), Tools.getSpecialItem("theftWand"));
+				}
+			}
+		} else if (killedE instanceof Bat) {
+			if (plugin.getConfig().getBoolean("LightningStrikeEgg")) {
+				killedE.getWorld().dropItem(killedE.getLocation(), Tools.getSpecialItem("strikeEgg"));
+			}
+		} else if (killedE instanceof Wither){
+			if (plugin.getConfig().getBoolean("WitherSkullLauncherDrop")){
+				ItemStack weapon = killer.getItemInHand();
+				int looting = weapon.getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS);
+				looting += Tools.potionEffectLevel(killer, PotionEffectType.LUCK);
+				looting -= Tools.potionEffectLevel(killer, PotionEffectType.UNLUCK);
+				if (Tools.Odds(Main.oddsConfig.getInt("WitherLauncherDrop"), looting)){
+					new BukkitRunnable(){
+						@Override
+						public void run(){
+							killedE.getWorld().dropItem(killedE.getLocation(), Tools.getSpecialItem("witherSL"));
+						}
+					}.runTaskLater(plugin, 20);
+				}
+			}
+		} else if (killedE.getServer().getVersion().contains("MC: 1.9")) {
 			if (killedE instanceof Shulker) {
 				if (plugin.getConfig().getBoolean("ShulkerLauncherDrop")) {
 					ItemStack weapon = killer.getItemInHand();
@@ -244,39 +286,6 @@ public class PlayerKill implements Listener {
 						killedE.getWorld().dropItem(killedE.getLocation(), drop);
 					}
 				}
-			}
-		}
-		if (killedE instanceof PigZombie) {
-			if (plugin.getConfig().getBoolean("SpecialBootsDrop")) {
-				ItemStack weapon = killer.getItemInHand();
-				int looting = weapon.getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS);
-				looting += Tools.potionEffectLevel(killer, PotionEffectType.LUCK);
-				looting -= Tools.potionEffectLevel(killer, PotionEffectType.UNLUCK);
-				if (Tools.Odds(Main.oddsConfig.getInt("SpecialBootsDrop"), looting)) {
-					ItemStack drop = Tools.bootsSelect();
-					killedE.getWorld().dropItem(killedE.getLocation(), drop);
-				}
-			}
-		}
-		if (killedE instanceof Witch) {
-			ItemStack weapon = killer.getItemInHand();
-			int looting = weapon.getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS);
-			looting += Tools.potionEffectLevel(killer, PotionEffectType.LUCK);
-			looting -= Tools.potionEffectLevel(killer, PotionEffectType.UNLUCK);
-			if (plugin.getConfig().getBoolean("FlightPotionDrop")) {
-				if (Tools.Odds(Main.oddsConfig.getInt("FlightPotionDrop"), looting)) {
-					killedE.getWorld().dropItem(killedE.getLocation(), Tools.getSpecialItem("flightPotion"));
-				}
-			}
-			if (plugin.getConfig().getBoolean("TheftWandDrop")) {
-				if (Tools.Odds(Main.oddsConfig.getInt("TheftWandDropChance"), looting)) {
-					killedE.getWorld().dropItem(killedE.getLocation(), Tools.getSpecialItem("theftWand"));
-				}
-			}
-		}
-		if (killedE instanceof Bat) {
-			if (plugin.getConfig().getBoolean("LightningStrikeEgg")) {
-				killedE.getWorld().dropItem(killedE.getLocation(), Tools.getSpecialItem("strikeEgg"));
 			}
 		}
 	}
