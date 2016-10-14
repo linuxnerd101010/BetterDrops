@@ -155,7 +155,7 @@ public class Tools {
 			itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 			itemMeta.setDisplayName(ChatColor.BLUE + "Wither Skull Launcher");
 			ArrayList<String> itemLore = new ArrayList<String>();
-			itemLore.add("DEBUG_LORE");
+			itemLore.add("A rocket launcher-of sorts.");
 			itemMeta.setLore(itemLore);
 			item.setItemMeta(itemMeta);
 			item.addUnsafeEnchantment(Enchantment.ARROW_INFINITE, 1);
