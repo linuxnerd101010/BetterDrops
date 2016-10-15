@@ -375,7 +375,7 @@ public class Tools {
 			} else {
 				return false;
 			}
-		} else if (lore.contains("DEBUG_LORE")){
+		} else if (lore.contains("A rocket launcher-of sorts.")){
 			if (item.getType().equals(Material.STICK)) {
 				return true;
 			} else {
