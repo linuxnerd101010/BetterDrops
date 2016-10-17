@@ -49,9 +49,9 @@ TheftWandDrop: true
 ## Wither Skull Launcher related options:
 WitherSkullLauncherDrop: true
 # Configuration for the cooldown when shooting black skulls. Time is in ticks.
-WitherSLBlackCooldown: 80
+WitherSLBlackCooldown: 60
 # Configuration for the cooldown when shooting blue skulls. Time is in ticks.
-WitherSLBlueCooldown: 40
+WitherSLBlueCooldown: 30
 #
 ## Strike Egg related options:
 LightningStrikeEgg: true
