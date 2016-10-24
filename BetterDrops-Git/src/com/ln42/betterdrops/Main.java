@@ -30,6 +30,10 @@ import com.ln42.betterdrops.event.player.PlayerThrowEgg;
 import com.ln42.betterdrops.event.player.PotionDrink;
 
 public class Main extends JavaPlugin implements Listener {
+	/**
+	 * @Author linuxnerd101010
+	 * @Github https://github.com/linuxnerd101010/BetterDrops
+	 */
 	public static FileConfiguration oddsConfig = null;
 	@SuppressWarnings("rawtypes")
 	public static HashMap<String, Class> configEntryType = new HashMap<String, Class>();

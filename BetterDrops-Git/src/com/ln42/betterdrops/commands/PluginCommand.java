@@ -22,7 +22,6 @@ import com.ln42.betterdrops.Main;
 import com.ln42.betterdrops.Tools;
 
 public class PluginCommand implements CommandExecutor {
-	// @SuppressWarnings("deprecation")
 	private Main plugin;
 
 	public PluginCommand(Main pl) {
