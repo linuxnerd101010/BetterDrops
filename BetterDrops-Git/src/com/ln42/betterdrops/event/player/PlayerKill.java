@@ -153,8 +153,8 @@ public class PlayerKill implements Listener {
 				}
 			}
 		} else if (killedE instanceof Zombie) {
-			if (plugin.getConfig().getBoolean("MobHeadsDrop")) {
-				if (!(killedE instanceof PigZombie)) {
+			if (!(killedE instanceof PigZombie)) {
+				if (plugin.getConfig().getBoolean("MobHeadsDrop")) {
 					int looting = 0;
 					if (nP) {
 						ItemStack weapon = killer.getItemInHand();
@@ -166,6 +166,17 @@ public class PlayerKill implements Listener {
 						short damage = 0;
 						byte data = 2;
 						ItemStack drop = new ItemStack(Material.SKULL_ITEM, 1, damage, data);
+						killedE.getWorld().dropItem(killedE.getLocation(), drop);
+					}
+				}
+			} else {
+				if (plugin.getConfig().getBoolean("SpecialBootsDrop")) {
+					ItemStack weapon = killer.getItemInHand();
+					int looting = weapon.getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS);
+					looting += Tools.potionEffectLevel(killer, PotionEffectType.LUCK);
+					looting -= Tools.potionEffectLevel(killer, PotionEffectType.UNLUCK);
+					if (Tools.Odds(Main.oddsConfig.getInt("SpecialBootsDrop"), looting)) {
+						ItemStack drop = Tools.bootsSelect();
 						killedE.getWorld().dropItem(killedE.getLocation(), drop);
 					}
 				}
@@ -216,17 +227,6 @@ public class PlayerKill implements Listener {
 					killedE.getWorld().dropItem(killedE.getLocation(), bow);
 				}
 			}
-		} else if (killedE instanceof PigZombie) {
-			if (plugin.getConfig().getBoolean("SpecialBootsDrop")) {
-				ItemStack weapon = killer.getItemInHand();
-				int looting = weapon.getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS);
-				looting += Tools.potionEffectLevel(killer, PotionEffectType.LUCK);
-				looting -= Tools.potionEffectLevel(killer, PotionEffectType.UNLUCK);
-				if (Tools.Odds(Main.oddsConfig.getInt("SpecialBootsDrop"), looting)) {
-					ItemStack drop = Tools.bootsSelect();
-					killedE.getWorld().dropItem(killedE.getLocation(), drop);
-				}
-			}
 		} else if (killedE instanceof Witch) {
 			ItemStack weapon = killer.getItemInHand();
 			int looting = weapon.getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS);
@@ -246,16 +246,16 @@ public class PlayerKill implements Listener {
 			if (plugin.getConfig().getBoolean("LightningStrikeEgg")) {
 				killedE.getWorld().dropItem(killedE.getLocation(), Tools.getSpecialItem("strikeEgg"));
 			}
-		} else if (killedE instanceof Wither){
-			if (plugin.getConfig().getBoolean("WitherSkullLauncherDrop")){
+		} else if (killedE instanceof Wither) {
+			if (plugin.getConfig().getBoolean("WitherSkullLauncherDrop")) {
 				ItemStack weapon = killer.getItemInHand();
 				int looting = weapon.getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS);
 				looting += Tools.potionEffectLevel(killer, PotionEffectType.LUCK);
 				looting -= Tools.potionEffectLevel(killer, PotionEffectType.UNLUCK);
-				if (Tools.Odds(Main.oddsConfig.getInt("WitherLauncherDrop"), looting)){
-					new BukkitRunnable(){
+				if (Tools.Odds(Main.oddsConfig.getInt("WitherLauncherDrop"), looting)) {
+					new BukkitRunnable() {
 						@Override
-						public void run(){
+						public void run() {
 							killedE.getWorld().dropItem(killedE.getLocation(), Tools.getSpecialItem("witherSL"));
 						}
 					}.runTaskLater(plugin, 20);
