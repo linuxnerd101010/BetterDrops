@@ -35,6 +35,7 @@ import com.ln42.betterdrops.Tools;
 
 import org.bukkit.enchantments.Enchantment;
 
+@SuppressWarnings("deprecation")
 public class PlayerKill implements Listener {
 	// @SuppressWarnings("unused")
 	private com.ln42.betterdrops.Main plugin;
@@ -43,7 +44,6 @@ public class PlayerKill implements Listener {
 		plugin = pl;
 	}
 
-	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onPlayerKillPlayer(EntityDeathEvent event) {
 		Entity killedE = event.getEntity();
@@ -275,6 +275,19 @@ public class PlayerKill implements Listener {
 				}
 			}
 		} else if (killedE.getServer().getVersion().contains("MC: 1.10")) {
+			if (killedE instanceof Shulker) {
+				if (plugin.getConfig().getBoolean("ShulkerLauncherDrop")) {
+					ItemStack weapon = killer.getItemInHand();
+					int looting = weapon.getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS);
+					looting += Tools.potionEffectLevel(killer, PotionEffectType.LUCK);
+					looting -= Tools.potionEffectLevel(killer, PotionEffectType.UNLUCK);
+					if (Tools.Odds(Main.oddsConfig.getInt("ShulkerLauncherDrop"), looting)) {
+						ItemStack drop = Tools.getSpecialItem("shulkerBL");
+						killedE.getWorld().dropItem(killedE.getLocation(), drop);
+					}
+				}
+			}
+		} else if (killedE.getServer().getVersion().contains("MC: 1.11")) {
 			if (killedE instanceof Shulker) {
 				if (plugin.getConfig().getBoolean("ShulkerLauncherDrop")) {
 					ItemStack weapon = killer.getItemInHand();

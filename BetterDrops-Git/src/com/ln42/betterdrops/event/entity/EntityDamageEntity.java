@@ -27,6 +27,7 @@ import com.ln42.betterdrops.Main;
 import com.ln42.betterdrops.Tools;
 import com.ln42.betterdrops.event.player.PlayerThrowEgg;
 
+@SuppressWarnings("deprecation")
 public class EntityDamageEntity implements Listener {
 	private Main plugin;
 
@@ -34,7 +35,6 @@ public class EntityDamageEntity implements Listener {
 		plugin = pl;
 	}
 
-	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onArrowHit(final EntityDamageByEntityEvent event) {
 		if (plugin.getConfig().getBoolean("PoweredSkeletons")) {

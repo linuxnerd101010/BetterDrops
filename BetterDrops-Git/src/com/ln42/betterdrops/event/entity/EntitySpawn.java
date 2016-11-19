@@ -15,6 +15,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import com.ln42.betterdrops.Main;
 import com.ln42.betterdrops.Tools;
 
+@SuppressWarnings("deprecation")
 public class EntitySpawn implements Listener {
 	private Main plugin;
 
@@ -23,7 +24,6 @@ public class EntitySpawn implements Listener {
 	}
 
 	// @SuppressWarnings("deprecation")
-	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onEntitySpawn(final CreatureSpawnEvent event) {
 		if (event.getEntity() instanceof Skeleton) {

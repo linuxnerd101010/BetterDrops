@@ -21,6 +21,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import com.ln42.betterdrops.Main;
 import com.ln42.betterdrops.Tools;
 
+@SuppressWarnings("deprecation")
 public class PluginCommand implements CommandExecutor {
 	private Main plugin;
 
@@ -29,7 +30,6 @@ public class PluginCommand implements CommandExecutor {
 	}
 
 	@Override
-	@SuppressWarnings("deprecation")
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		boolean permission = true;
 		boolean oddsPerm = true;
