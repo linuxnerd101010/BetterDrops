@@ -222,13 +222,16 @@ public class EntityDamageEntity implements Listener {
 					public void run() {
 						if (PlayerThrowEgg.thrower.containsKey(egg)) {
 							if (ProjectileLaunch.thrownSpecialItems.containsKey((PlayerThrowEgg.thrower.get(egg)))) {
-								PlayerThrowEgg.targetEntity.put(PlayerThrowEgg.thrower.get(egg),
-										(LivingEntity) event.getEntity());
-								PlayerThrowEgg.thrower.remove(egg);
+								if (ProjectileLaunch.thrownSpecialItems.get(PlayerThrowEgg.thrower.get(egg)) == 0) {
+									PlayerThrowEgg.targetEntity.put(PlayerThrowEgg.thrower.get(egg),
+											(LivingEntity) event.getEntity());
+									PlayerThrowEgg.thrower.remove(egg);
+								}
 							}
 						}
 					}
 				}.runTaskLater(plugin, 1);
+				return;
 			}
 		}
 	}

@@ -9,7 +9,9 @@ import java.util.HashSet;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EvokerFangs;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.ShulkerBullet;
@@ -21,7 +23,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.util.BlockIterator;
+import org.bukkit.util.Vector;
 
 import com.ln42.betterdrops.Main;
 import com.ln42.betterdrops.Tools;
@@ -32,7 +36,10 @@ public class PlayerClick implements Listener {
 	public static HashMap<Player, Boolean> wSLCooldownBlack = new HashMap<Player, Boolean>();
 	public static HashMap<Player, Boolean> wSLCooldownBlue = new HashMap<Player, Boolean>();
 	public static HashMap<Player, Boolean> strikeEggThrown = new HashMap<Player, Boolean>();
+	public static HashMap<Player, Boolean> vexBombThrown = new HashMap<Player, Boolean>();
 	public static HashMap<Player, Integer> expStorageThrown = new HashMap<Player, Integer>();
+	public static HashMap<Player, Integer> id = new HashMap<Player, Integer>();
+
 	private com.ln42.betterdrops.Main plugin;
 
 	public PlayerClick(com.ln42.betterdrops.Main pl) {
@@ -148,6 +155,72 @@ public class PlayerClick implements Listener {
 					}
 				}
 			}
+			if (Tools.isSpecialItem(item, "evokerFW")) {
+				@SuppressWarnings("unused")
+				boolean defend = false;
+				if (event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
+					defend = true;
+				} else if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+					defend = true;
+				}
+				Location playerLoc = player.getLocation();
+				Vector v = playerLoc.getDirection();
+				v.setY(0);
+				playerLoc.setDirection(v);
+				final BlockIterator blockIt = new BlockIterator(playerLoc, 0.0, 16);
+				final BukkitScheduler scheduler = player.getServer().getScheduler();
+				int Id = scheduler.scheduleSyncRepeatingTask(plugin, new Runnable() {
+					@Override
+					public void run() {
+						if (id.containsKey(player)) {
+							int fId = id.get(player);
+							if (!(blockIt.hasNext())) {
+								id.remove(player);
+								scheduler.cancelTask(fId);
+								return;
+							}
+							Block targetB = blockIt.next();
+							boolean blockIsLegit = false;
+							for (int c = 0; c <= 4; c++) {
+								Location blockLoc = targetB.getLocation();
+								if (targetB.getType().equals(Material.AIR)) {
+									blockLoc.setY(blockLoc.getY() - 1);
+									targetB = blockLoc.getBlock();
+								} else {
+									blockLoc.setY(blockLoc.getY() + 1);
+									if (blockLoc.getBlock().getType().equals(Material.AIR)) {
+										targetB = blockLoc.getBlock();
+										blockIsLegit = true;
+										break;
+									} else {
+										targetB = blockLoc.getBlock();
+									}
+								}
+							}
+							if (blockIsLegit) {
+								EvokerFangs fang = player.getWorld().spawn(targetB.getLocation(), EvokerFangs.class);
+								fang.setOwner(player);
+							}
+							if (blockIt.hasNext()) {
+								blockIt.next();
+							} else {
+								id.remove(player);
+								scheduler.cancelTask(fId);
+							}
+						}
+					}
+				}, 0L, 1L);
+				id.put(player, Id);
+				/*
+				 * while (blockIt.hasNext()) { Block targetB = blockIt.next();
+				 * EvokerFangs fang =
+				 * player.getWorld().spawn(targetB.getLocation(),
+				 * EvokerFangs.class); fang.setOwner(player); if
+				 * (blockIt.hasNext()) { blockIt.next(); }
+				 * 
+				 * }
+				 */
+			}
 		}
 		if (plugin.getConfig().getBoolean("LightningStrikeEgg")) {
 			if (item.getType().equals(Material.EGG)) {
@@ -162,6 +235,11 @@ public class PlayerClick implements Listener {
 				if (amount != 0) {
 					expStorageThrown.put(player, amount);
 				}
+			}
+		}
+		if (item.getType().equals(Material.EGG)) {
+			if (Tools.isSpecialItem(item, "vexBomb")) {
+				vexBombThrown.put(player, true);
 			}
 		}
 	}

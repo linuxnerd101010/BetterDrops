@@ -1,5 +1,5 @@
 main: com.ln42.betterdrops.Main
-version: 1.3.2
+version: 1.4-Beta-1
 name: BetterDrops
 
 commands:

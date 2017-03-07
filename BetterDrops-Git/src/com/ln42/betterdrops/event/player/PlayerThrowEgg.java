@@ -16,6 +16,7 @@ import org.bukkit.entity.Egg;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Vex;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerEggThrowEvent;
@@ -40,39 +41,46 @@ public class PlayerThrowEgg implements Listener {
 	@EventHandler
 	public void onEggThrow(final PlayerEggThrowEvent event) {
 		if (ProjectileLaunch.thrownSpecialItems.containsKey(event.getEgg())) {
-			thrower.put(event.getEgg(), event.getPlayer());
-			new BukkitRunnable() {
-				@Override
-				public void run() {
-					ProjectileLaunch.thrownSpecialItems.remove(event.getEgg());
-					Location eggLoc = event.getEgg().getLocation();
-					if (!(targetEntity.isEmpty())) {
-						if (targetEntity.containsKey(event.getPlayer())) {
-							lightningStrike(targetEntity.get(event.getPlayer()));
-							targetEntity.remove(event.getPlayer());
-							return;
+			if (ProjectileLaunch.thrownSpecialItems.get(event.getEgg()) == 0) {
+				thrower.put(event.getEgg(), event.getPlayer());
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						ProjectileLaunch.thrownSpecialItems.remove(event.getEgg());
+						Location eggLoc = event.getEgg().getLocation();
+						if (!(targetEntity.isEmpty())) {
+							if (targetEntity.containsKey(event.getPlayer())) {
+								lightningStrike(targetEntity.get(event.getPlayer()));
+								targetEntity.remove(event.getPlayer());
+								return;
+							}
+						}
+						Entity[] earr = getNearbyEntities(eggLoc, 5, event.getPlayer());
+						if (!(targetEntity.isEmpty())) {
+							if (targetEntity.containsKey(event.getPlayer())) {
+								lightningStrike(targetEntity.get(event.getPlayer()));
+								targetEntity.remove(event.getPlayer());
+								return;
+							}
+						}
+						for (int i = 0; i <= earr.length - 1; i++) {
+							if (earr[i] != null) {
+								lightningStrike((LivingEntity) earr[i]);
+								return;
+							}
 						}
 					}
-					Entity[] earr = getNearbyEntities(eggLoc, 5, event.getPlayer());
-					if (!(targetEntity.isEmpty())) {
-						if (targetEntity.containsKey(event.getPlayer())) {
-							lightningStrike(targetEntity.get(event.getPlayer()));
-							targetEntity.remove(event.getPlayer());
-							return;
-						}
-					}
-					for (int i = 0; i <= earr.length - 1; i++) {
-						if (earr[i] != null) {
-							lightningStrike((LivingEntity) earr[i]);
-							return;
-						}
-					}
+				}.runTaskLater(plugin, 2);
+			} else if (ProjectileLaunch.thrownSpecialItems.get(event.getEgg()) == 1){
+				Location eggLoc = event.getEgg().getLocation();
+				for (int v = 0; v <= 4; v++){
+					event.getEgg().getWorld().spawn(Tools.randomLocationVariance(eggLoc, 1, 0, true), Vex.class);
 				}
-			}.runTaskLater(plugin, 2);
+			}
 		}
 		/*
 		 * NOTES: Put a static boolean in PlayerClick that detects when the
-		 * player uses a anvil egg, and sets it to true for 2 clicks. Only
+		 * player uses a strike egg, and sets it to true for 2 clicks. Only
 		 * execute this if that boolean is true. Also, register this event.
 		 */
 	}
@@ -151,9 +159,9 @@ public class PlayerThrowEgg implements Listener {
 				// world.playSound(newL, Sound.BLOCK_ANVIL_PLACE, .4F, 2);
 				if (target.isDead()) {
 					count.remove(target);
-					new BukkitRunnable(){
+					new BukkitRunnable() {
 						@Override
-						public void run(){
+						public void run() {
 							strikeActive.remove(target);
 						}
 					}.runTaskLater(plugin, 4);

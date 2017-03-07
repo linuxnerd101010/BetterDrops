@@ -21,24 +21,29 @@ public class ProjectileLaunch implements Listener {
 	public ProjectileLaunch(Main pl) {
 		plugin = pl;
 	}
+
 	@EventHandler
-	public void onProjectileLaunch(ProjectileLaunchEvent event){
+	public void onProjectileLaunch(ProjectileLaunchEvent event) {
 		Projectile entity = event.getEntity();
 		ProjectileSource s = entity.getShooter();
-		if (!(s instanceof Player)){
+		if (!(s instanceof Player)) {
 			return;
 		}
 		Player player = (Player) s;
-		if (entity.getType().equals(EntityType.EGG)){
-			if (plugin.getConfig().getBoolean("LightningStrikeEgg")){
-				if (PlayerClick.strikeEggThrown.containsKey(s)){
+		if (entity.getType().equals(EntityType.EGG)) {
+			if (plugin.getConfig().getBoolean("LightningStrikeEgg")) {
+				if (PlayerClick.strikeEggThrown.containsKey(s)) {
 					thrownSpecialItems.put(entity, 0);
 					PlayerClick.strikeEggThrown.remove(player);
 				}
 			}
-		} else if (entity.getType().equals(EntityType.THROWN_EXP_BOTTLE)){
-			if (plugin.getConfig().getBoolean("XPStorageDrop")){
-				if (PlayerClick.expStorageThrown.containsKey(player)){
+			if (PlayerClick.vexBombThrown.containsKey(s)) {
+				thrownSpecialItems.put(entity, 1);
+				PlayerClick.vexBombThrown.remove(player);
+			}
+		} else if (entity.getType().equals(EntityType.THROWN_EXP_BOTTLE)) {
+			if (plugin.getConfig().getBoolean("XPStorageDrop")) {
+				if (PlayerClick.expStorageThrown.containsKey(player)) {
 					thrownSpecialItems.put(entity, PlayerClick.expStorageThrown.get(player));
 					PlayerClick.expStorageThrown.remove(player);
 				}

@@ -149,6 +149,28 @@ public class Tools {
 			item.setItemMeta(itemMeta);
 			return item;
 		}
+		if (name.equals("vexBomb")) {
+			ItemStack item = new ItemStack(Material.EGG);
+			ItemMeta itemMeta = item.getItemMeta();
+			itemMeta.setDisplayName(ChatColor.WHITE + "Vex Grenade");
+			ArrayList<String> itemLore = new ArrayList<String>();
+			itemLore.add("DEBUG_LORE_VEX");
+			itemMeta.setLore(itemLore);
+			item.setItemMeta(itemMeta);
+			return item;
+		}
+		if (name.equals("evokerFW")) {
+			ItemStack item = new ItemStack(Material.STICK);
+			ItemMeta itemMeta = item.getItemMeta();
+			itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+			itemMeta.setDisplayName(ChatColor.BLUE + "Evoker Fang Wand");
+			ArrayList<String> itemLore = new ArrayList<String>();
+			itemLore.add("DEBUG_LORE_FANG");
+			itemMeta.setLore(itemLore);
+			item.setItemMeta(itemMeta);
+			item.addUnsafeEnchantment(Enchantment.ARROW_INFINITE, 1);
+			return item;
+		}
 		if (name.equals("witherSL")) {
 			ItemStack item = new ItemStack(Material.STICK);
 			ItemMeta itemMeta = item.getItemMeta();
@@ -357,6 +379,12 @@ public class Tools {
 			} else {
 				return false;
 			}
+		} else if (lore.contains("DEBUG_LORE_FANG")) {
+			if (item.getType().equals(Material.STICK)) {
+				return true;
+			} else {
+				return false;
+			}
 		} else if (lore.contains("Freeze 'em!")) {
 			if (item.getType().equals(Material.BOW)) {
 				return true;
@@ -375,8 +403,14 @@ public class Tools {
 			} else {
 				return false;
 			}
-		} else if (lore.contains("A rocket launcher-of sorts.")){
+		} else if (lore.contains("A rocket launcher-of sorts.")) {
 			if (item.getType().equals(Material.STICK)) {
+				return true;
+			} else {
+				return false;
+			}
+		} else if (lore.contains("DEBUG_LORE_VEX")) {
+			if (item.getType().equals(Material.EGG)) {
 				return true;
 			} else {
 				return false;
@@ -406,13 +440,13 @@ public class Tools {
 
 	public static Location randomLocationVariance(Location l, int amount, int increaseYAmount, boolean enableRandomY) {
 		Random rand = new Random();
-		int randomNum = rand.nextInt((amount - 0) + 1) + 0;
+		int randomNum = rand.nextInt(amount + 1);
 		double randD = Math.random();
 		if (randD <= .5) {
 			randomNum *= -1;
 		}
 		l.setX(l.getX() + randomNum);
-		randomNum = rand.nextInt((amount - 0) + 1) + 0;
+		randomNum = rand.nextInt(amount + 1);
 		randD = Math.random();
 		if (randD <= .5) {
 			randomNum *= -1;
@@ -422,7 +456,7 @@ public class Tools {
 			l.setY(l.getY() + increaseYAmount);
 		}
 		if (enableRandomY) {
-			randomNum = rand.nextInt((amount - 0) + 1) + 0;
+			randomNum = rand.nextInt(amount) + 1;
 			randD = Math.random();
 			if (randD <= .5) {
 				randomNum *= -1;
